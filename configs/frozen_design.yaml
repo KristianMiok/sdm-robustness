@@ -1,0 +1,153 @@
+# =============================================================================
+# Frozen design decisions
+# =============================================================================
+# These values are LOCKED per the project brief (Briefing_paper_4, section 2).
+# Do not modify during execution. If a value looks wrong, raise it *before*
+# starting the run, not mid-run.
+# =============================================================================
+
+# -------------------------------------------------------------------------
+# Benchmark construction (Petko et al. 2026 filtered pool)
+# -------------------------------------------------------------------------
+benchmark:
+  accuracy_required: High         # Only High-accuracy records in clean pool
+  snapping_threshold_m: 200       # ≤ 200 m snapping distance for benchmark
+  dedup_policy: per_segment_per_taxon   # One record per Hydrography90m segment per taxon
+  # Initial; may relax to 500 m after Task 1 audit if candidate pool is sparse
+  snapping_fallback_m: 500
+
+# Minimum clean records per species (category-dependent gates, Step 1.3)
+minimum_records_by_category:
+  widespread: 500      # median standardised range ≥ 3.14
+  regional: 200        # 1.80 – 3.14
+  endemic: 80          # ≤ 1.80
+
+# Petko et al. 2026 distributional categorisation thresholds
+# (median standardised range, Supplementary Table 3)
+distributional_categories:
+  endemic_max: 1.80
+  regional_max: 3.14
+  # widespread: > 3.14
+
+# -------------------------------------------------------------------------
+# Two axes of spatial uncertainty
+# -------------------------------------------------------------------------
+# Axis 1: Snapping uncertainty — high-accuracy records snapped to distant segments
+# Axis 2: Low-accuracy uncertainty — contributor-flagged coarse records
+uncertainty_pools:
+  snapping:
+    mild_range_m: [200, 500]        # n_snap_200_500
+    strong_range_m: [500, 1000]     # n_snap_500_1000
+    extreme_cutoff_m: 1000          # > 1000 m: reported only, excluded from experiment
+  low_accuracy:
+    accuracy_flag: Low
+
+# -------------------------------------------------------------------------
+# Contamination design (substitution, NOT addition)
+# -------------------------------------------------------------------------
+# N_experiment held constant per species across all levels.
+# p% contamination = (p% from contamination pool) + ((100-p)% from clean pool).
+# 50% is the conceptual ceiling — above that it's "SDM on mostly bad data",
+# a different question.
+contamination:
+  design: substitution
+  levels_pct: [0, 5, 10, 20, 35, 50]    # 0 = benchmark (reused, not recomputed)
+  ceiling_pct: 50
+
+# -------------------------------------------------------------------------
+# Replicates
+# -------------------------------------------------------------------------
+# Default 30 per (species × axis × level × algorithm). Automatic escalation
+# to 50 if 95% bootstrap CI exceeds 10% of metric value for any cell.
+# Kristian's recommendation (pending Lucian sign-off): start low levels at 50
+# directly because variance dominates at small p%.
+replicates:
+  default_n: 30
+  escalated_n: 50
+  ci_width_trigger_pct: 10
+  # Proposed (awaiting Lucian): pre-escalate for low contamination
+  preescalate_low_levels: true
+  preescalate_threshold_pct: 10   # levels ≤ 10% get 50 replicates from start
+
+# -------------------------------------------------------------------------
+# Modelling algorithms
+# -------------------------------------------------------------------------
+algorithms:
+  random_forest:
+    enabled: true
+    n_estimators: 500
+    class_weight: balanced
+    # hyperparameters tuned once on clean benchmark via nested CV, then frozen
+  xgboost:
+    enabled: true
+  maxent:
+    enabled: false          # optional; enable if elapid available and time allows
+  decision_trees:
+    enabled: false          # explicitly NOT in stress-test (too unstable per run)
+    # may optionally appear in benchmark-only interpretability panel
+
+# -------------------------------------------------------------------------
+# Predictor handling
+# -------------------------------------------------------------------------
+predictors:
+  # Per-species cleaning — applied ONCE on clean benchmark, then FROZEN for all
+  # contamination runs of that species. Do NOT re-clean after contamination.
+  missing_threshold_pct: 30
+  correlation_threshold: 0.98     # within pair |r| > 0.98 → drop one
+  # Three parallel scale tracks per species
+  scale_tracks:
+    - local_only           # l_ variables
+    - upstream_only        # u_ variables
+    - combined             # l_ + u_
+  # Predictor domains (from Hydrography90m / GeoFRESH)
+  domains:
+    CLI: climate            # l_CLI1..l_CLI76 and u_CLI* subset
+    TOP: topography         # l_TOP1..l_TOP144 and u_TOP* subset
+    LAC: land_cover         # l_LAC1..l_LAC22
+    SOL: soil               # l_SOL1..l_SOL60
+
+# -------------------------------------------------------------------------
+# Cross-validation
+# -------------------------------------------------------------------------
+cross_validation:
+  primary:
+    type: spatial_block
+    group_variable: basin_id
+    # Kristian's recommendation: fallback needed for endemic species where
+    # n_basins is 3–4 (CV degenerates). Proposed fallback: spatial blocks
+    # within basin if n_basins < 5.
+    fallback_n_basins_threshold: 5
+    fallback_type: spatial_blocks_within_basin
+  secondary:
+    type: stratified_kfold
+    n_splits: 5
+
+# -------------------------------------------------------------------------
+# Pseudo-absence generation
+# -------------------------------------------------------------------------
+# Network-constrained sampling along Hydrography90m segments within accessible
+# area. Details finalised in Task 3 protocol. Kristian's note: density should
+# be controlled per Strahler order, not just buffer, to avoid snapping-axis
+# confound.
+pseudo_absence:
+  method: network_constrained
+  strategy: TBD_task3
+  presence_absence_ratio: 1.0       # 1:1 for RF; up to 1:10 for Maxent
+  accessible_area: dispersal_limited_buffer
+  stratify_by_strahler: true        # Kristian's recommendation
+
+# -------------------------------------------------------------------------
+# Reproducibility
+# -------------------------------------------------------------------------
+reproducibility:
+  master_seed: 20260416        # date of project kickoff, base seed
+  log_config_hash: true
+  log_git_commit: true
+
+# -------------------------------------------------------------------------
+# Optional extensions
+# -------------------------------------------------------------------------
+optional:
+  run_2d_grid: false               # snapping × low-accuracy joint grid
+  run_null_model: true             # Kristian's recommendation — random reshuffle baseline
+  transferability_levels_pct: [10, 30, 50]   # Kristian's recommendation vs. single 30%

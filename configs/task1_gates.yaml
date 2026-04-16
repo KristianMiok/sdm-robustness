@@ -1,0 +1,30 @@
+# =============================================================================
+# Task 1 — Candidacy gate thresholds
+# =============================================================================
+# Applied in audit.gates.classify_candidates().
+# Gates 2 and 3 reflect the substitution design: contamination pools must
+# supply enough records for the full 50% contamination level.
+# =============================================================================
+
+gate_1_minimum_benchmark:
+  widespread: 500         # n_clean_dedup_200m ≥ 500
+  regional: 200
+  endemic: 80
+
+gate_2_snapping_pool:
+  # Criterion: (n_snap_200_500 + n_snap_500_1000) ≥ n_clean_dedup_200m
+  # (i.e., snapping pool can supply 50% contamination)
+  enabled: true
+
+gate_3_lowacc_pool:
+  # Criterion: n_low_acc_dedup ≥ n_clean_dedup_200m
+  enabled: true
+
+gate_4_basin_spread:
+  min_basins: 3
+
+gate_5_strahler_spread:
+  min_distinct_orders: 3
+
+# Borderline margin (for the ⚠ flag in scenario_feasibility matrix)
+borderline_margin_pct: 10

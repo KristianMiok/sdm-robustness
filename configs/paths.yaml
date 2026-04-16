@@ -1,0 +1,26 @@
+# =============================================================================
+# Paths configuration
+# =============================================================================
+# Per-user override: copy this file to `paths.local.yaml` (gitignored) and set
+# your local paths there. The code checks paths.local.yaml first, falls back
+# to this file. Environment variable SDM_RAW_DATA_PATH overrides both.
+# =============================================================================
+
+# Olga's master table — Petko et al. 2026 integrated dataset
+# On Kristian's laptop:
+raw_data_path: /Users/kristianmiok/Desktop/Lucian/Global/Descriptive Paper/Data/combined_data_true_master.csv
+
+# Derived artefacts
+interim_data_dir: data/interim
+processed_data_dir: data/processed
+outputs_data_dir: data/outputs
+
+# Results
+task1_results_dir: results/task1_audit
+task5_results_dir: results/task5_execution
+task6_results_dir: results/task6_analysis
+figures_dir: results/figures
+
+# Manuscript
+manuscript_figures_dir: manuscript/figures
+manuscript_tables_dir: manuscript/tables
