@@ -99,3 +99,6 @@ logs/
 .env
 .env.local
 configs/paths.local.yaml
+
+# generated reports
+*.docx
