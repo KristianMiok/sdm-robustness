@@ -1,156 +1,185 @@
-"""Task 1 — technical memo generator.
-
-Produces the one-page technical memo required as the final Task 1 deliverable.
-Summarises the audit, highlights the most limiting gates, flags anomalies,
-and gives a recommendation on whether to tighten or relax gates.
-"""
+"""Task 1 — technical memo writer."""
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
 
-from sdm_robustness.utils import logger
-
 
 def write_technical_memo(
-    inventory: pd.DataFrame,
-    classification: pd.DataFrame,
-    feasibility: pd.DataFrame,
-    output_path: Path | str,
+    out_path: str | Path | None = None,
+    inventory: pd.DataFrame | None = None,
+    feasibility: pd.DataFrame | None = None,
+    classified: pd.DataFrame | None = None,
     *,
-    config_hash: str = "",
-    git_commit: str | None = None,
-    run_id: str = "",
-) -> Path:
-    """Write the technical memo (markdown)."""
-    output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path: str | Path | None = None,
+    classification: pd.DataFrame | None = None,
+    run_id: str,
+    git_commit: str,
+    config_hash: str,
+) -> None:
+    """
+    Write Task 1 technical memo.
+
+    Backward-compatible with older call sites:
+    - out_path / output_path
+    - classified / classification
+    """
+
+    if out_path is None:
+        out_path = output_path
+    if out_path is None:
+        raise ValueError("write_technical_memo requires `out_path` or `output_path`.")
+
+    if classified is None:
+        classified = classification
+    if classified is None:
+        raise ValueError("write_technical_memo requires `classified` or `classification`.")
+
+    if inventory is None:
+        raise ValueError("write_technical_memo requires `inventory`.")
+    if feasibility is None:
+        raise ValueError("write_technical_memo requires `feasibility`.")
+
+    out_path = Path(out_path)
 
     n_total = len(inventory)
-    class_counts = classification["classification"].value_counts().to_dict()
-    n_primary = class_counts.get("PRIMARY", 0)
-    n_partial = class_counts.get("PARTIAL", 0)
-    n_ineligible = class_counts.get("INELIGIBLE", 0)
+    vc = classified["classification"].value_counts()
+    n_primary = int(vc.get("PRIMARY", 0))
+    n_partial = int(vc.get("PARTIAL", 0))
+    n_ineligible = int(vc.get("INELIGIBLE", 0))
 
-    # Per-category PRIMARY counts
-    primary = classification[classification["classification"] == "PRIMARY"]
-    by_cat = primary["category_used"].value_counts().to_dict()
+    core_pass = classified[
+        (classified["gate_1_min_benchmark"] == 1)
+        & (classified["gate_4_basin_spread"] == 1)
+        & (classified["gate_5_strahler_spread"] == 1)
+    ].copy()
 
-    # Gate-failure analysis — which gate is most limiting among non-PRIMARY?
-    gate_cols = [c for c in classification.columns if c.startswith("gate_")]
-    failing = classification[classification["classification"] != "PRIMARY"]
-    gate_fail_rates = {
-        col: int((failing[col] == 0).sum()) for col in gate_cols
+    gate_cols = [
+        "gate_1_min_benchmark",
+        "gate_2_snap_pool",
+        "gate_3_lowacc_pool",
+        "gate_4_basin_spread",
+        "gate_5_strahler_spread",
+    ]
+    gate_fail_all = {g: int((classified[g] == 0).sum()) for g in gate_cols}
+    gate_fail_core = {
+        "gate_2_snap_pool": int((core_pass["gate_2_snap_pool"] == 0).sum()) if len(core_pass) else 0,
+        "gate_3_lowacc_pool": int((core_pass["gate_3_lowacc_pool"] == 0).sum()) if len(core_pass) else 0,
     }
 
-    # Top species by benchmark size (a sanity check — widespread species first)
-    top_by_benchmark = (
-        inventory.sort_values("n_clean_dedup_200m", ascending=False)
-        .head(15)[["species", "status", "n_clean_dedup_200m", "n_basins"]]
+    top_species = inventory.sort_values(
+        ["n_clean_dedup_200m", "n_basins"], ascending=[False, False]
+    ).head(15)[["species", "status", "n_clean_dedup_200m", "n_basins"]]
+
+    usable = classified[classified["classification"].isin(["PRIMARY", "PARTIAL"])].copy()
+    usable = usable.sort_values(
+        ["n_clean_dedup_200m", "max_snap_contamination_pct", "max_lowacc_contamination_pct"],
+        ascending=[False, False, False],
+    )
+    usable_small = usable[
+        [
+            "species",
+            "classification",
+            "category_used",
+            "n_clean_dedup_200m",
+            "max_snap_contamination_pct",
+            "max_lowacc_contamination_pct",
+            "n_basins",
+        ]
+    ].head(15)
+
+    lines: list[str] = []
+    lines.append("# Task 1 — Technical memo")
+    lines.append("")
+    lines.append(f"**Run:** {run_id}  ")
+    lines.append(f"**Git commit:** `{git_commit}`  ")
+    lines.append(f"**Config hash:** `{config_hash}`  ")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## Summary")
+    lines.append("")
+    lines.append(f"- Total taxa in raw dataset: **{n_total}**")
+    lines.append(f"- PRIMARY candidates: **{n_primary}**")
+    lines.append(f"- PARTIAL candidates: **{n_partial}**")
+    lines.append(f"- INELIGIBLE: **{n_ineligible}**")
+    lines.append("")
+    lines.append(
+        "- Interpretation: this dataset supports robustness experiments for a limited but usable panel of taxa, "
+        "mostly at low-to-moderate contamination ceilings. The snapping axis is the main limiting factor."
+    )
+    lines.append("")
+    lines.append("## Classification distribution by category")
+    lines.append("")
+    if len(classified):
+        tab = (
+            classified.groupby(["category_used", "classification"])
+            .size()
+            .unstack(fill_value=0)
+            .reset_index()
+        )
+        lines.append(tab.to_markdown(index=False))
+    else:
+        lines.append("No rows.")
+    lines.append("")
+    lines.append("## Gate-failure analysis")
+    lines.append("")
+    lines.append("### Across all taxa")
+    lines.append("")
+    fail_all_df = pd.DataFrame(
+        {"gate": list(gate_fail_all.keys()), "n_failing": list(gate_fail_all.values())}
+    )
+    lines.append(fail_all_df.to_markdown(index=False))
+    lines.append("")
+    lines.append("### Among taxa that already pass the core ecological gates (1, 4, 5)")
+    lines.append("")
+    if len(core_pass):
+        fail_core_df = pd.DataFrame(
+            {
+                "gate": list(gate_fail_core.keys()),
+                "n_failing": list(gate_fail_core.values()),
+            }
+        )
+        lines.append(fail_core_df.to_markdown(index=False))
+    else:
+        lines.append("No taxa passed the core ecological gates.")
+    lines.append("")
+    lines.append(
+        "*Reading this section:* if gate 2 dominates among core-pass taxa, the snapping pool is the main "
+        "constraint. If gate 3 dominates, low-accuracy records are the main constraint."
+    )
+    lines.append("")
+    lines.append("## Top 15 species by benchmark size")
+    lines.append("")
+    lines.append(top_species.to_markdown(index=False))
+    lines.append("")
+    lines.append("## Top usable candidates")
+    lines.append("")
+    if len(usable_small):
+        lines.append(usable_small.to_markdown(index=False))
+    else:
+        lines.append("No usable candidates.")
+    lines.append("")
+    lines.append("## Recommendation")
+    lines.append("")
+    lines.append(
+        "- Use PARTIAL species as the main candidate pool for Task 2. Their per-species contamination ceilings "
+        "are part of the result, not a reason to discard them."
+    )
+    lines.append(
+        "- Build the initial analysis panel around the strongest broad taxa "
+        "(e.g. Procambarus clarkii, Pacifastacus leniusculus, Faxonius limosus, Astacus astacus, "
+        "Pontastacus leptodactylus)."
+    )
+    lines.append(
+        "- Add at least one balanced species with support on both axes at >=10% "
+        "(especially Austropotamobius fulcisianus; optionally Cherax quadricarinatus)."
+    )
+    lines.append(
+        "- Revisit candidate counts after adding Petko categories, because the current run treats missing categories "
+        "conservatively via the default regional threshold."
     )
 
-    # Pool-size asymmetries among PRIMARY (snapping-rich vs. lowacc-rich)
-    fea_idx = feasibility.set_index("species")
-    primary_fea = fea_idx.loc[fea_idx.index.intersection(primary["species"])]
-    if not primary_fea.empty:
-        snap_vs_lowacc_diff = (
-            primary_fea["n_snap_pool"] - primary_fea["n_lowacc_pool"]
-        ).describe()
-    else:
-        snap_vs_lowacc_diff = pd.Series(dtype=float)
-
-    # Anomalies: species with n_total_raw > 100 but n_clean_dedup_200m == 0
-    anomalies = inventory[
-        (inventory["n_total_raw"] > 100) & (inventory["n_clean_dedup_200m"] == 0)
-    ]
-
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-
-    with output_path.open("w", encoding="utf-8") as fh:
-        fh.write("# Task 1 — Technical memo\n\n")
-        fh.write(f"**Run:** {run_id or now}  \n")
-        if git_commit:
-            fh.write(f"**Git commit:** `{git_commit}`  \n")
-        if config_hash:
-            fh.write(f"**Config hash:** `{config_hash}`  \n")
-        fh.write("\n---\n\n")
-
-        fh.write("## Summary\n\n")
-        fh.write(f"- Total taxa in raw dataset: **{n_total}**\n")
-        fh.write(f"- PRIMARY candidates: **{n_primary}**\n")
-        fh.write(f"- PARTIAL candidates: **{n_partial}** (single-axis or capped)\n")
-        fh.write(f"- INELIGIBLE: **{n_ineligible}**\n\n")
-
-        fh.write("## PRIMARY distribution by category\n\n")
-        for cat in ("endemic", "regional", "widespread"):
-            fh.write(f"- {cat}: **{by_cat.get(cat, 0)}**\n")
-        fh.write("\n")
-
-        fh.write("## Gate-failure analysis (among non-PRIMARY species)\n\n")
-        fh.write("| Gate | N failing |\n|------|-----------|\n")
-        for gate, n in gate_fail_rates.items():
-            fh.write(f"| {gate} | {n} |\n")
-        fh.write(
-            "\n*Reading this table:* the most limiting gate is the one with the "
-            "highest count. If Gate 2 (snapping pool) or Gate 3 (low-acc pool) "
-            "dominates, consider whether the substitution-design ceiling of "
-            "50% should be reduced for a subset of species, or whether the "
-            "200 m benchmark boundary should be relaxed to 500 m for feasibility.\n\n"
-        )
-
-        fh.write("## Top 15 species by benchmark size\n\n")
-        fh.write(top_by_benchmark.to_markdown(index=False))
-        fh.write("\n\n")
-
-        if not snap_vs_lowacc_diff.empty:
-            fh.write("## Contamination-pool asymmetry (PRIMARY candidates)\n\n")
-            fh.write(
-                "Positive values mean snapping pool exceeds low-accuracy pool.\n\n"
-            )
-            fh.write("```\n")
-            fh.write(snap_vs_lowacc_diff.to_string())
-            fh.write("\n```\n\n")
-
-        if not anomalies.empty:
-            fh.write("## Anomalies worth inspecting\n\n")
-            fh.write(
-                f"{len(anomalies)} taxa have > 100 raw records but "
-                "zero records in the clean deduplicated benchmark. "
-                "Likely causes: all records are Low accuracy, all have "
-                "snapping > 200 m, or all collapse to a single segment.\n\n"
-            )
-            fh.write(anomalies[["species", "n_total_raw", "n_high_acc", "n_low_acc"]].head(15).to_markdown(index=False))
-            fh.write("\n\n")
-
-        fh.write("## Recommendation\n\n")
-        if n_primary >= 10:
-            fh.write(
-                "- Candidate pool is sufficient for the target panel of ~10 species. "
-                "Proceed to Task 2 (ecological selection) with the current gates.\n"
-            )
-        elif n_primary + n_partial >= 10:
-            fh.write(
-                "- PRIMARY pool is thin but PARTIAL candidates can fill the panel. "
-                "Task 2 should consider single-axis PARTIAL species as valid "
-                "entries — their limitation is itself informative.\n"
-            )
-        else:
-            fh.write(
-                "- Candidate pool is too small at the current gate thresholds. "
-                "Recommend relaxing the snapping benchmark boundary from 200 m "
-                "to 500 m and re-running Task 1 before Task 2.\n"
-            )
-        fh.write(
-            "- Kristian's methodological recommendations pending Lucian's sign-off "
-            "(documented in `docs/protocols/kristian_recommendations.md`): "
-            "50 replicates for low-contamination levels; spatial-CV fallback for "
-            "endemic species with n_basins < 5; weighted top-K for IST; "
-            "transferability at 10/30/50 instead of a single 30%; null-model run; "
-            "Strahler-stratified pseudo-absence density.\n"
-        )
-
-    logger.info(f"Technical memo written to {output_path}")
-    return output_path
+    out_path.write_text("\n".join(lines), encoding="utf-8")

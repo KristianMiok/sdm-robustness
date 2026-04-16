@@ -27,6 +27,9 @@ def plot_stratification_diagnostic(
 ) -> Path:
     """Plot 2-panel stratification diagnostic for PRIMARY candidates.
 
+    Gracefully handles the zero-PRIMARY case by producing an informative
+    placeholder figure instead of crashing.
+
     Parameters
     ----------
     classification : DataFrame
@@ -42,6 +45,35 @@ def plot_stratification_diagnostic(
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     primary = classification[classification["classification"] == "PRIMARY"].copy()
+
+    # Handle the empty-PRIMARY case explicitly — don't hand NaN to matplotlib.
+    if primary.empty:
+        fig, ax = plt.subplots(figsize=(9, 4.5))
+        ax.axis("off")
+        ax.text(
+            0.5, 0.5,
+            "No PRIMARY candidates under current gates.\n\n"
+            "See candidate_shortlist.csv and technical_memo.md\n"
+            "for gate-failure analysis and remediation options.",
+            ha="center", va="center", fontsize=12,
+            transform=ax.transAxes,
+        )
+        # Also show a small side-panel with PARTIAL / INELIGIBLE counts for context
+        counts = classification["classification"].value_counts()
+        subtitle = "  |  ".join(f"{k}: {v}" for k, v in counts.items())
+        fig.suptitle(
+            f"Task 1 — stratification diagnostic{title_suffix}\n{subtitle}",
+            fontsize=11,
+        )
+        fig.tight_layout()
+        fig.savefig(output_path, bbox_inches="tight")
+        plt.close(fig)
+        logger.warning(
+            f"No PRIMARY candidates — stratification diagnostic written as "
+            f"placeholder to {output_path}"
+        )
+        return output_path
+
     # Merge status from inventory
     status_map = inventory.set_index("species")["status"]
     primary["status"] = primary["species"].map(status_map).fillna("Unknown")
