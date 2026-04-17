@@ -1,23 +1,4 @@
-"""Task 1 — Step 1.3: candidacy gates and classification.
-
-Data-driven-ceiling variant (2026-04-16): Petko-filtered data can support
-low contamination for many species, but 50% contamination is too strict for
-almost all species on the snapping axis. So gates 2/3 now require support
-for the minimum tested contamination level (default 5%), while PRIMARY keeps
-the strict 50% requirement on both axes.
-
-Gates:
-    1       Minimum benchmark size (category-dependent)
-    2       Snapping pool supports >= min_level_pct contamination
-    3       Low-accuracy pool supports >= min_level_pct contamination
-    4       Basin spread: >= 3 unique basins
-    5       Strahler spread: >= 3 distinct orders
-
-Classification:
-    PRIMARY     = passes gates {1,4,5} and both axes support strict_ceiling_pct
-    PARTIAL     = passes gates {1,4,5} and at least one axis supports min_level_pct
-    INELIGIBLE  = otherwise
-"""
+"""Task 1 — Step 1.3: revised candidacy gates after Lucian's design revision."""
 
 from __future__ import annotations
 
@@ -32,10 +13,19 @@ def classify_candidates(
     gates_config: dict,
     *,
     default_category: str = "regional",
-    min_level_pct: int = 5,
-    strict_ceiling_pct: int = 50,
 ) -> pd.DataFrame:
-    """Apply Task 1 gates and classify species."""
+    """Apply revised Task 1 gates and classify each species.
+
+    Revised classes:
+      - DUAL-AXIS
+      - SNAPPING-ONLY
+      - LOW-ACC-ONLY
+      - INELIGIBLE
+
+    Revised feasibility requirements:
+      - Gate 2: supports snapping 5%
+      - Gate 3: supports low-accuracy 20%
+    """
     inv = inventory.set_index("species")
     fea = feasibility.set_index("species")
     both = inv.join(fea, how="inner", rsuffix="_fea")
@@ -47,10 +37,13 @@ def classify_candidates(
         .map(
             {
                 "endemic": "endemic",
+                "narrow": "endemic",
+                "endemic/narrow-range": "endemic",
+                "narrow-range": "endemic",
                 "regional": "regional",
                 "widespread": "widespread",
                 "cosmopolitan": "widespread",
-                "narrow": "endemic",
+                "widespread/cosmopolitan": "widespread",
             }
         )
         .fillna(default_category)
@@ -58,14 +51,10 @@ def classify_candidates(
 
     min_map = gates_config["gate_1_minimum_benchmark"]
     min_required = cats.map(min_map).astype(float)
-    gate_1 = (both["n_clean_dedup_200m"] >= min_required).astype(int)
+    gate_1 = (both["n_clean_dedup_200m"].fillna(0).astype(float) >= min_required).astype(int)
 
-    n_exp = both["n_experiment_assumed"].astype(float)
-    required_min = (min_level_pct / 100.0) * n_exp
-    required_strict = (strict_ceiling_pct / 100.0) * n_exp
-
-    gate_2 = (both["n_snap_pool"].astype(float) >= required_min).astype(int)
-    gate_3 = (both["n_lowacc_pool"].astype(float) >= required_min).astype(int)
+    gate_2 = both["feas_snap_5"].fillna(0).astype(int)
+    gate_3 = both["feas_lowacc_20"].fillna(0).astype(int)
 
     min_basins = gates_config["gate_4_basin_spread"]["min_basins"]
     gate_4 = (both["n_basins"].fillna(0).astype(float) >= float(min_basins)).astype(int)
@@ -78,16 +67,12 @@ def classify_candidates(
     )
     gate_5 = (n_strahler >= float(min_orders)).astype(int)
 
-    strict_snap = both["n_snap_pool"].astype(float) >= required_strict
-    strict_lowacc = both["n_lowacc_pool"].astype(float) >= required_strict
-
     core_pass = (gate_1 == 1) & (gate_4 == 1) & (gate_5 == 1)
-    any_pool_min = (gate_2 == 1) | (gate_3 == 1)
-    both_pools_strict = strict_snap & strict_lowacc
 
     status = pd.Series("INELIGIBLE", index=both.index, dtype="object")
-    status.loc[core_pass & any_pool_min] = "PARTIAL"
-    status.loc[core_pass & both_pools_strict] = "PRIMARY"
+    status.loc[core_pass & (gate_2 == 1) & (gate_3 == 1)] = "DUAL-AXIS"
+    status.loc[core_pass & (gate_2 == 1) & (gate_3 == 0)] = "SNAPPING-ONLY"
+    status.loc[core_pass & (gate_2 == 0) & (gate_3 == 1)] = "LOW-ACC-ONLY"
 
     out = pd.DataFrame(
         {
@@ -96,6 +81,12 @@ def classify_candidates(
             "n_clean_dedup_200m": both["n_clean_dedup_200m"].values,
             "n_snap_pool": both["n_snap_pool"].values,
             "n_lowacc_pool": both["n_lowacc_pool"].values,
+            "feas_snap_1": both.get("feas_snap_1", 0),
+            "feas_snap_2": both.get("feas_snap_2", 0),
+            "feas_snap_5": both.get("feas_snap_5", 0),
+            "feas_lowacc_3": both.get("feas_lowacc_3", 0),
+            "feas_lowacc_10": both.get("feas_lowacc_10", 0),
+            "feas_lowacc_20": both.get("feas_lowacc_20", 0),
             "max_snap_contamination_pct": both["max_snap_contamination_pct"].values,
             "max_lowacc_contamination_pct": both["max_lowacc_contamination_pct"].values,
             "n_basins": both["n_basins"].values,
@@ -106,15 +97,10 @@ def classify_candidates(
             "gate_3_lowacc_pool": gate_3.values,
             "gate_4_basin_spread": gate_4.values,
             "gate_5_strahler_spread": gate_5.values,
-            "strict_50pct_snap": strict_snap.astype(int).values,
-            "strict_50pct_lowacc": strict_lowacc.astype(int).values,
             "classification": status.values,
         }
     ).reset_index(drop=True)
 
     counts = out["classification"].value_counts()
     logger.info(f"Classification counts: {counts.to_dict()}")
-    logger.info(
-        f"Gate config: min_level_pct={min_level_pct}, strict_ceiling_pct={strict_ceiling_pct}"
-    )
     return out

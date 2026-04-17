@@ -1,15 +1,4 @@
-"""Task 1 — Step 1.5: scenario feasibility matrix.
-
-For each PRIMARY and PARTIAL candidate, produce a per-species matrix across
-the full level set {5, 10, 20, 35, 50} on both axes:
-
-    ✓  feasible
-    ✗  infeasible
-    ⚠  borderline (< 10% margin on required pool size)
-
-Output is a CSV with integer-coded cells (1 = ✓, 0 = ✗, -1 = ⚠) plus a
-companion human-readable .md rendering with the symbols.
-"""
+"""Task 1 — Step 1.5: revised scenario feasibility matrix."""
 
 from __future__ import annotations
 
@@ -19,90 +8,86 @@ import pandas as pd
 
 from sdm_robustness.utils import logger
 
-# Integer codes used in the CSV
-CODE_FEASIBLE = 1
-CODE_BORDERLINE = -1
-CODE_INFEASIBLE = 0
 
-# Symbol mapping for the markdown rendering
-_SYMBOLS = {CODE_FEASIBLE: "✓", CODE_BORDERLINE: "⚠", CODE_INFEASIBLE: "✗"}
+def _mark(x: int) -> str:
+    return "✓" if int(x) == 1 else "–"
 
 
 def build_scenario_matrix(
-    classification: pd.DataFrame,
-    feasibility: pd.DataFrame,
-    *,
-    levels_pct: tuple[int, ...] = (5, 10, 20, 35, 50),
-    borderline_margin_pct: float = 10.0,
+    classified: pd.DataFrame,
+    feasibility: pd.DataFrame | None = None,
+    borderline_margin_pct: float | None = None,
 ) -> pd.DataFrame:
-    """Build the per-species feasibility matrix.
+    """Build revised scenario feasibility matrix.
 
-    Parameters
-    ----------
-    classification : DataFrame
-        Output of audit.gates.classify_candidates().
-    feasibility : DataFrame
-        Output of audit.feasibility.compute_feasibility().
-    levels_pct : tuple
-        Contamination levels to evaluate.
-    borderline_margin_pct : float
-        Pool margin below which a scenario is flagged as borderline.
+    Backward-compatible with older runner signatures that still pass:
+    - feasibility
+    - borderline_margin_pct
 
-    Returns
-    -------
-    DataFrame with one row per candidate species and columns for each
-    (axis, level) combination plus a 2D feasibility flag.
+    These are ignored in the revised Task 1 design because the matrix is
+    derived directly from the classified table and exact feasibility flags.
     """
-    # Keep only PRIMARY and PARTIAL
-    candidates = classification[
-        classification["classification"].isin(["PRIMARY", "PARTIAL"])
-    ][["species", "classification"]].copy()
+    keep = classified[classified["classification"] != "INELIGIBLE"].copy()
 
-    fea = feasibility.set_index("species")
-    mat = candidates.set_index("species").join(fea, how="left")
+    if keep.empty:
+        return pd.DataFrame(
+            columns=[
+                "species",
+                "classification",
+                "category_used",
+                "snap_1",
+                "snap_2",
+                "snap_5",
+                "lowacc_3",
+                "lowacc_10",
+                "lowacc_20",
+                "max_snap_contamination_pct",
+                "max_lowacc_contamination_pct",
+            ]
+        )
 
-    margin = borderline_margin_pct / 100.0
-    records = []
-    for species, row in mat.iterrows():
-        n_exp = row["n_experiment_assumed"]
-        rec = {"species": species, "classification": row["classification"]}
-        for axis, pool_col in (("snap", "n_snap_pool"), ("lowacc", "n_lowacc_pool")):
-            pool = row[pool_col]
-            for level in levels_pct:
-                required = (level / 100.0) * n_exp
-                if pool >= required:
-                    if pool < required * (1 + margin):
-                        code = CODE_BORDERLINE
-                    else:
-                        code = CODE_FEASIBLE
-                else:
-                    code = CODE_INFEASIBLE
-                rec[f"{axis}_{level}pct"] = code
-        rec["feas_2d"] = int(row.get("feas_2d", 0))
-        records.append(rec)
+    out = pd.DataFrame(
+        {
+            "species": keep["species"].values,
+            "classification": keep["classification"].values,
+            "category_used": keep["category_used"].values,
+            "snap_1": keep["feas_snap_1"].map(_mark).values,
+            "snap_2": keep["feas_snap_2"].map(_mark).values,
+            "snap_5": keep["feas_snap_5"].map(_mark).values,
+            "lowacc_3": keep["feas_lowacc_3"].map(_mark).values,
+            "lowacc_10": keep["feas_lowacc_10"].map(_mark).values,
+            "lowacc_20": keep["feas_lowacc_20"].map(_mark).values,
+            "max_snap_contamination_pct": keep["max_snap_contamination_pct"].values,
+            "max_lowacc_contamination_pct": keep["max_lowacc_contamination_pct"].values,
+        }
+    )
 
-    out = pd.DataFrame(records)
-    logger.info(f"Scenario matrix built: {len(out)} candidate species.")
-    return out
+    if "n_clean_dedup_200m" in keep.columns:
+        out["n_clean_dedup_200m"] = keep["n_clean_dedup_200m"].values
+        out = out.sort_values(
+            ["classification", "n_clean_dedup_200m", "species"],
+            ascending=[True, False, True],
+        )
+        out = out.drop(columns=["n_clean_dedup_200m"])
+    else:
+        out = out.sort_values(["classification", "species"], ascending=[True, True])
+
+    logger.info("Scenario matrix built: %d candidate species.", len(out))
+    return out.reset_index(drop=True)
 
 
-def render_scenario_matrix_markdown(
-    matrix: pd.DataFrame, output_path: Path | str
-) -> Path:
-    """Render the integer-coded matrix as human-readable markdown."""
-    output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    display = matrix.copy()
-    code_cols = [c for c in display.columns if c.endswith("pct") or c == "feas_2d"]
-    for col in code_cols:
-        display[col] = display[col].map(lambda v: _SYMBOLS.get(int(v), "?"))
-
-    with output_path.open("w", encoding="utf-8") as fh:
-        fh.write("# Scenario feasibility matrix\n\n")
-        fh.write("Legend: ✓ feasible  ⚠ borderline (<10% margin)  ✗ infeasible\n\n")
-        fh.write(display.to_markdown(index=False))
-        fh.write("\n")
-
-    logger.info(f"Scenario matrix markdown written to {output_path}")
-    return output_path
+def write_scenario_markdown(df: pd.DataFrame, out_path: str | Path) -> None:
+    out_path = Path(out_path)
+    lines: list[str] = []
+    lines.append("# Task 1 — Scenario feasibility matrix")
+    lines.append("")
+    lines.append("Revised contamination grid:")
+    lines.append("- Snapping: 0 / 1 / 2 / 5 %")
+    lines.append("- Low-accuracy: 0 / 3 / 10 / 20 %")
+    lines.append("")
+    if len(df):
+        lines.append(df.to_markdown(index=False))
+    else:
+        lines.append("No usable candidates.")
+    out_path.write_text("\n".join(lines), encoding="utf-8")
+    logger.info("Scenario matrix markdown written to %s", out_path)
