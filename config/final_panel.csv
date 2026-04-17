@@ -1,5 +1,5 @@
 entity,type,class_group,treatment,category,run_snapping,run_lowacc,notes
-Astacus astacus,DUAL,pure_native,direct,regional,1,1,Regional corrected
+Astacus astacus,DUAL,pure_native,direct,widespread,1,1,Regional corrected
 Pontastacus leptodactylus (pooled),DUAL,translocated,pool_native_alien,widespread,1,1,Niche conserved
 Austropotamobius torrentium (pooled),DUAL,translocated,pool_native_alien,regional,1,1,Regional corrected
 Austropotamobius fulcisianus (pooled),DUAL,translocated,pool_native_alien,regional,1,1,Regional corrected

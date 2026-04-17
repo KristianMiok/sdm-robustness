@@ -180,3 +180,51 @@ def compute_ist(
         if np.isfinite(value) and value < threshold:
             return float(level)
     return None
+
+
+def compute_domain_importance_shift(
+    benchmark_importance: dict[str, float],
+    current_importance: dict[str, float],
+) -> dict[str, float]:
+    domains = sorted(set(benchmark_importance) | set(current_importance))
+    b_total = sum(float(benchmark_importance.get(d, 0.0)) for d in domains)
+    c_total = sum(float(current_importance.get(d, 0.0)) for d in domains)
+
+    out: dict[str, float] = {}
+    for d in domains:
+        b_share = (float(benchmark_importance.get(d, 0.0)) / b_total) if b_total > 0 else np.nan
+        c_share = (float(current_importance.get(d, 0.0)) / c_total) if c_total > 0 else np.nan
+        out[f"{d}_benchmark_share"] = b_share
+        out[f"{d}_current_share"] = c_share
+        out[f"{d}_share_shift"] = c_share - b_share if np.isfinite(b_share) and np.isfinite(c_share) else np.nan
+    return out
+
+
+def domain_rank_stability(
+    benchmark_importance: dict[str, float],
+    current_importance: dict[str, float],
+) -> float:
+    domains = sorted(set(benchmark_importance) | set(current_importance))
+    b = np.array([float(benchmark_importance.get(d, 0.0)) for d in domains])
+    c = np.array([float(current_importance.get(d, 0.0)) for d in domains])
+    corr, _ = spearmanr(b, c)
+    return float(corr)
+
+
+def classify_against_benchmark_envelope(
+    contaminated_mean: float,
+    contaminated_ci_low: float,
+    contaminated_ci_high: float,
+    benchmark_mean: float,
+    benchmark_sd: float,
+) -> str:
+    env_low = benchmark_mean - 2.0 * benchmark_sd
+    env_high = benchmark_mean + 2.0 * benchmark_sd
+
+    if env_low <= contaminated_mean <= env_high:
+        return "within_noise"
+
+    overlaps = not (contaminated_ci_high < env_low or contaminated_ci_low > env_high)
+    if overlaps:
+        return "marginal"
+    return "significant"

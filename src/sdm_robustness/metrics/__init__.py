@@ -13,6 +13,9 @@ from sdm_robustness.metrics.core import (
     range_area_change,
     spatial_mismatch_summary,
     compute_ist,
+    compute_domain_importance_shift,
+    domain_rank_stability,
+    classify_against_benchmark_envelope,
 )
 
 __all__ = [
@@ -28,6 +31,9 @@ __all__ = [
     "range_area_change",
     "spatial_mismatch_summary",
     "compute_ist",
+    "compute_domain_importance_shift",
+    "domain_rank_stability",
+    "classify_against_benchmark_envelope",
 ]
 
 from sdm_robustness.metrics.schema import RunMetadata, MetricRecord

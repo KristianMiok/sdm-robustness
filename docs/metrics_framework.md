@@ -115,6 +115,22 @@ Tier 2 answers:
 - do their effects remain similar?
 - does the inferred ecological envelope move or broaden/narrow?
 
+
+
+### 4.4 Domain-level importance aggregation
+In addition to variable-level stability, aggregate importance by thematic domain:
+- CLI
+- TOP
+- SOL
+- LAC
+
+For each contaminated run, compute:
+- domain-level importance share = sum of importances within domain / total importance
+- domain importance shift = signed difference in domain share relative to benchmark
+- domain rank stability = whether benchmark domain rank order changes under contamination
+
+This is a derived post-processing step from the variable-importance vectors and should be implemented for all algorithms where importance vectors are available.
+
 Tier 2 is central to the paper’s argument about masked uncertainty.
 
 ---
@@ -189,6 +205,18 @@ The benchmark reference should come from the clean benchmark pipeline for that e
 ---
 
 ## 8. Aggregation and reporting
+
+
+### 7.3 Benchmark stability envelope
+For each metric, define the benchmark stability envelope using Task 5c as:
+- mean ± 2 SD from benchmark-vs-benchmark pairwise comparisons
+
+For each contaminated cell, classify degradation as:
+- **within noise**: contaminated mean lies within benchmark envelope
+- **marginal**: contaminated mean lies outside the envelope, but contaminated 95% CI overlaps it
+- **significant**: contaminated 95% CI does not overlap the benchmark envelope
+
+This classification should be computed automatically for every results cell.
 
 ### 8.1 Run-level outputs
 Each run must produce a machine-readable record of all Tier 1–3 metrics.

@@ -177,11 +177,20 @@ Operational accessible-area definition should be deterministic and logged. Recom
 
 If a more restrictive network neighborhood rule is used, it must be documented and applied consistently across all entities.
 
-### 6.3 Presence:absence ratio
-Use a fixed presence:absence ratio per entity, specified once and then frozen. Recommended default:
-- 1:1 for the main implementation
+For large accessible areas, sample pseudo-absences/background points from the accessible area rather than using all accessible segments directly. The total accessible-area segment count and the sampled contrast-set size must be logged per entity and per run family.
 
-If a different ratio is selected after pilot benchmarking, the change must be justified and applied globally.
+### 6.3 Presence:absence ratio
+Use a fixed sampled contrast set from the accessible area.
+
+For RF and XGBoost:
+- recommended default = 1:1 presence:pseudo-absence ratio
+
+For Maxent:
+- use 10,000 background points sampled from the accessible area
+
+The full accessible area is not used directly as the contrast set. Instead, pseudo-absences/background points are sampled from it in a seed-controlled way.
+
+If a different RF/XGBoost ratio is selected after pilot benchmarking, the change must be justified and applied globally.
 
 ### 6.4 Pseudo-absence reproducibility
 Pseudo-absence draws must be:
@@ -199,6 +208,16 @@ Pseudo-absences are not part of the contamination mechanism itself. Contaminatio
 ### 7.1 Primary CV
 Primary evaluation uses **spatial block cross-validation** with:
 - `basin_id` as the grouping variable
+
+Default fold construction:
+- grouped 5-fold CV
+- basins sorted by `basin_id`
+- deterministic round-robin assignment of basins to folds
+
+Fallback:
+- if an entity has fewer than 15 basins, use leave-one-basin-out
+
+If any fold has zero presences or zero pseudo-absences/background points, log the failure explicitly. No silent fallback is allowed.
 
 This is the main evaluation protocol reported in the paper.
 
@@ -222,9 +241,20 @@ If a specific entity × track combination cannot support a valid primary CV spli
 The core paper uses:
 - Random Forest
 - XGBoost
+- Maxent
 
-### 8.2 Optional algorithm
-- Maxent may be added later, but it is not part of the frozen core pipeline at this stage
+### 8.2 Maxent
+Maxent is required as the third core SDM algorithm.
+
+Implementation target:
+- Python Maxent wrapper compatible with the pipeline structure (e.g. `elapid` or equivalent)
+
+Background handling for Maxent:
+- use 10,000 background points sampled from the accessible area
+- background sampling must be network-constrained
+- background sampling must be seed-controlled and logged
+
+This is the only algorithm-specific difference in the presence/background design relative to RF and XGBoost.
 
 ### 8.3 Random Forest
 Recommended frozen baseline:
