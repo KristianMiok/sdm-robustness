@@ -1,21 +1,13 @@
-"""Task 5 — stress-test execution."""
-
-from sdm_robustness.execution.contamination import (
-    ContaminationDraw,
-    draw_substitution_sample,
-)
-from sdm_robustness.execution.runner import (
-    run_benchmark_sanity_check,
-    run_core_factorial,
-    run_null_model,
-    run_transferability_test,
+from sdm_robustness.execution.panel import get_panel_entity
+from sdm_robustness.execution.cv import assign_basin_folds
+from sdm_robustness.execution.sampling import (
+    sample_rf_xgb_pseudoabsences,
+    sample_maxent_background,
 )
 
 __all__ = [
-    "ContaminationDraw",
-    "draw_substitution_sample",
-    "run_benchmark_sanity_check",
-    "run_core_factorial",
-    "run_null_model",
-    "run_transferability_test",
+    "get_panel_entity",
+    "assign_basin_folds",
+    "sample_rf_xgb_pseudoabsences",
+    "sample_maxent_background",
 ]
