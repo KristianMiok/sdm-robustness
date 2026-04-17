@@ -104,3 +104,9 @@ configs/paths.local.yaml
 *.docx
 
 results/task1b_invasive_split/
+
+# --- Pilot outputs (regenerate from code) ---
+results/pilot_cell/
+results/pilot_cv/
+results/pilot_matrix/
+results/pilot_prep/

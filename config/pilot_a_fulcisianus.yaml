@@ -1,0 +1,17 @@
+entity: "Austropotamobius fulcisianus (pooled)"
+algorithms:
+  - rf
+  - xgboost
+  - maxent
+spatial_tracks:
+  - local
+  - upstream
+  - combined
+snapping_levels: [0, 1, 2, 5]
+lowacc_levels: [0, 3, 10, 20]
+n_replicates: 30
+rf_xgb_pa_ratio: 1.0
+maxent_background_n: 10000
+cv:
+  n_splits: 5
+  looo_threshold: 15
