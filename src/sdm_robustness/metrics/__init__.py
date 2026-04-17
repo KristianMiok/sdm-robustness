@@ -29,3 +29,5 @@ __all__ = [
     "spatial_mismatch_summary",
     "compute_ist",
 ]
+
+from sdm_robustness.metrics.schema import RunMetadata, MetricRecord

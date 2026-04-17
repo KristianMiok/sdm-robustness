@@ -1,0 +1,14 @@
+entity,type,class_group,treatment,category,run_snapping,run_lowacc,notes
+Astacus astacus,DUAL,pure_native,direct,regional,1,1,Regional corrected
+Pontastacus leptodactylus (pooled),DUAL,translocated,pool_native_alien,widespread,1,1,Niche conserved
+Austropotamobius torrentium (pooled),DUAL,translocated,pool_native_alien,regional,1,1,Regional corrected
+Austropotamobius fulcisianus (pooled),DUAL,translocated,pool_native_alien,regional,1,1,Regional corrected
+Procambarus clarkii (native),DUAL,invasive_split,native_only,widespread,1,1,Split invasive
+Procambarus clarkii (alien),DUAL,invasive_split,alien_only,widespread,1,1,Split invasive
+Pacifastacus leniusculus (alien),DUAL,invasive_split,alien_only,widespread,1,1,Split invasive
+Faxonius limosus (alien),DUAL,invasive_split,alien_only,widespread,1,1,Split invasive
+Lacunicambarus diogenes,SNAP,pure_native,direct,widespread,1,0,Burrowing
+Cambarus latimanus,SNAP,pure_native,direct,regional,1,0,Regional corrected
+Cambarus striatus,SNAP,pure_native,direct,regional,1,0,Regional corrected
+Creaserinus fodiens,SNAP,pure_native,direct,regional,1,0,Regional corrected
+Faxonius limosus (native),SNAP,invasive_split,native_only,regional,1,0,Regional corrected
