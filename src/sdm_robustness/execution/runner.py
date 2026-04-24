@@ -155,6 +155,7 @@ def run_core_factorial(
     n_splits: int = 5,
     looo_threshold: int = 15,
     checkpoint_every: int = 50,
+    n_experiment_override: int | None = None,
 ) -> Path:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -175,13 +176,16 @@ def run_core_factorial(
         snap_pool_n = len(prepared["snap_pool"])
         lowacc_pool_n = len(prepared["lowacc_pool"])
 
-        n_experiment = _compute_n_experiment(
-            benchmark_n=benchmark_n,
-            snap_pool_n=snap_pool_n,
-            lowacc_pool_n=lowacc_pool_n,
-            axes=valid_axes,
-            max_level_pct=max_level,
-        )
+        if n_experiment_override is not None:
+            n_experiment = n_experiment_override
+        else:
+            n_experiment = _compute_n_experiment(
+                benchmark_n=benchmark_n,
+                snap_pool_n=snap_pool_n,
+                lowacc_pool_n=lowacc_pool_n,
+                axes=valid_axes,
+                max_level_pct=max_level,
+            )
 
         print(
             f"[{entity_name}] axes={valid_axes} benchmark_n={benchmark_n} "

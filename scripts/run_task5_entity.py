@@ -31,6 +31,55 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Run core factorial only",
     )
+    parser.add_argument(
+        "--algorithms",
+        nargs="+",
+        default=["random_forest", "xgboost", "maxent"],
+        help="Algorithms to run",
+    )
+    parser.add_argument(
+        "--tracks",
+        nargs="+",
+        default=["local_only", "upstream_only", "combined"],
+        help="Spatial tracks to run",
+    )
+    parser.add_argument(
+        "--levels",
+        nargs="+",
+        type=int,
+        default=[0, 5, 10, 20, 35, 50],
+        help="Contamination levels to run",
+    )
+    parser.add_argument(
+        "--axes",
+        nargs="+",
+        default=["snapping", "lowacc"],
+        help="Axes to allow (runner will still respect entity type)",
+    )
+    parser.add_argument(
+        "--n-replicates-default",
+        type=int,
+        default=30,
+        help="Default replicate count for levels above threshold",
+    )
+    parser.add_argument(
+        "--n-replicates-low-levels",
+        type=int,
+        default=50,
+        help="Replicate count for levels <= low-level-threshold",
+    )
+    parser.add_argument(
+        "--low-level-threshold-pct",
+        type=int,
+        default=10,
+        help="Threshold for using low-level replicate count",
+    )
+    parser.add_argument(
+        "--n-experiment",
+        type=int,
+        default=None,
+        help="Override n_experiment (force constant sample size across sub-jobs)",
+    )
     return parser.parse_args()
 
 
@@ -49,6 +98,9 @@ def main() -> int:
             panel,
             master_df,
             output_dir=output_dir,
+            algorithms=tuple(args.algorithms),
+            scale_tracks=tuple(args.tracks),
+            n_replicates=args.n_replicates_default,
         )
         print(f"Wrote: {benchmark_path}")
         return 0
@@ -57,6 +109,14 @@ def main() -> int:
         panel,
         master_df,
         output_dir=output_dir,
+        algorithms=tuple(args.algorithms),
+        axes=tuple(args.axes),
+        levels_pct=tuple(args.levels),
+        scale_tracks=tuple(args.tracks),
+        n_replicates_default=args.n_replicates_default,
+        n_replicates_low_levels=args.n_replicates_low_levels,
+        low_level_threshold_pct=args.low_level_threshold_pct,
+        n_experiment_override=args.n_experiment,
     )
     print(f"Wrote: {results_path}")
 
@@ -65,6 +125,9 @@ def main() -> int:
             panel,
             master_df,
             output_dir=output_dir,
+            algorithms=tuple(args.algorithms),
+            scale_tracks=tuple(args.tracks),
+            n_replicates=args.n_replicates_default,
         )
         print(f"Wrote: {benchmark_path}")
 
