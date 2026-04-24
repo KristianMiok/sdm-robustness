@@ -248,6 +248,7 @@ def fit_cv_cell(
     maxent_background_n: int = 10_000,
     rf_xgb_pa_ratio: float = 1.0,
     maxent_n_cpus: int = 1,
+    n_experiment: int | None = None,
 ) -> dict[str, Any]:
     feat_cols = get_track_columns(benchmark, track)
     if not feat_cols:
@@ -257,8 +258,17 @@ def fit_cv_cell(
     benchmark_x = benchmark[kept].copy()
     medians = benchmark_x.median(numeric_only=True)
 
+    # Subsample benchmark to n_experiment if specified, so the training-set
+    # size is held constant across contamination levels and axes.
+    if n_experiment is not None and n_experiment < len(benchmark):
+        bench_for_contam = benchmark.sample(
+            n=n_experiment, replace=False, random_state=seed
+        ).copy()
+    else:
+        bench_for_contam = benchmark
+
     contaminated_pres = contaminate_presence_set(
-        benchmark=benchmark,
+        benchmark=bench_for_contam,
         contamination_pool=contamination_pool,
         level_pct=level,
         seed=seed,

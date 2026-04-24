@@ -39,15 +39,16 @@ def _prepare_entity_data(
 ) -> dict[str, object]:
     panel_row = get_panel_entity(entity_name)
 
-    species = panel_row["species"] if "species" in panel_row.index else _species_from_entity_name(entity_name)
-    category = str(panel_row["category"]).lower() if "category" in panel_row.index else "pooled"
-    entity_type = str(panel_row["type"]).upper() if "type" in panel_row.index else "DUAL-AXIS"
+    species = _species_from_entity_name(entity_name)
+    category = str(panel_row.get("category", "")).lower() if "category" in panel_row.index else ""
+    entity_type = str(panel_row.get("type", "DUAL")).upper() if "type" in panel_row.index else "DUAL"
+    treatment = str(panel_row.get("treatment", "")).lower() if "treatment" in panel_row.index else ""
 
     base = master_table[master_table["Crayfish_scientific_name"] == species].copy()
 
-    if category == "native":
+    if treatment == "native_only":
         base = base[base["Status"].isin(NATIVE_VALUES)].copy()
-    elif category == "alien":
+    elif treatment == "alien_only":
         base = base[base["Status"].isin(ALIEN_VALUES)].copy()
 
     benchmark = base[
@@ -76,6 +77,7 @@ def _prepare_entity_data(
         "species": species,
         "category": category,
         "entity_type": entity_type,
+        "treatment": treatment,
         "benchmark": benchmark,
         "snap_pool": snap_pool,
         "lowacc_pool": lowacc_pool,
@@ -83,13 +85,50 @@ def _prepare_entity_data(
     }
 
 
-def _axes_for_entity_type(entity_type: str) -> tuple[str, ...]:
-    entity_type = str(entity_type).upper()
-    if entity_type == "DUAL-AXIS":
-        return ("snapping", "lowacc")
-    if entity_type == "SNAPPING-ONLY":
-        return ("snapping",)
-    return ("snapping",)
+def _axes_for_panel_row(panel_row: pd.Series, allowed_axes: tuple[str, ...]) -> tuple[str, ...]:
+    """Respect the explicit run_snapping / run_lowacc columns if present,
+    otherwise fall back to type-based dispatch."""
+    axes = []
+
+    if "run_snapping" in panel_row.index:
+        if int(panel_row["run_snapping"]) == 1 and "snapping" in allowed_axes:
+            axes.append("snapping")
+    else:
+        if "snapping" in allowed_axes:
+            axes.append("snapping")
+
+    if "run_lowacc" in panel_row.index:
+        if int(panel_row["run_lowacc"]) == 1 and "lowacc" in allowed_axes:
+            axes.append("lowacc")
+    else:
+        entity_type = str(panel_row.get("type", "DUAL")).upper()
+        if entity_type in ("DUAL", "DUAL-AXIS") and "lowacc" in allowed_axes:
+            axes.append("lowacc")
+
+    return tuple(axes)
+
+
+def _compute_n_experiment(
+    benchmark_n: int,
+    snap_pool_n: int,
+    lowacc_pool_n: int,
+    axes: tuple[str, ...],
+    max_level_pct: int,
+) -> int:
+    """Compute a single n_experiment that is feasible across all axes and levels.
+
+    The constraint is: for each active axis, n_experiment * max_level/100 <= pool_size.
+    Also n_experiment <= benchmark_n (can't sample more clean records than we have).
+    """
+    frac = max_level_pct / 100.0
+    caps = [benchmark_n]
+
+    if "snapping" in axes and frac > 0:
+        caps.append(int(snap_pool_n / frac))
+    if "lowacc" in axes and frac > 0:
+        caps.append(int(lowacc_pool_n / frac))
+
+    return max(10, min(caps))
 
 
 def _checkpoint_rows(rows: list[dict], output_path: Path) -> None:
@@ -125,11 +164,30 @@ def run_core_factorial(
     final_path = output_dir / "results_raw.parquet"
 
     entity_names = species_panel["entity"].tolist()
+    max_level = max(levels_pct)
 
     for entity_name in entity_names:
         prepared = _prepare_entity_data(master_table, entity_name)
-        entity_type = prepared["entity_type"]
-        valid_axes = tuple(a for a in _axes_for_entity_type(entity_type) if a in axes)
+        panel_row = prepared["panel_row"]
+        valid_axes = _axes_for_panel_row(panel_row, axes)
+
+        benchmark_n = len(prepared["benchmark"])
+        snap_pool_n = len(prepared["snap_pool"])
+        lowacc_pool_n = len(prepared["lowacc_pool"])
+
+        n_experiment = _compute_n_experiment(
+            benchmark_n=benchmark_n,
+            snap_pool_n=snap_pool_n,
+            lowacc_pool_n=lowacc_pool_n,
+            axes=valid_axes,
+            max_level_pct=max_level,
+        )
+
+        print(
+            f"[{entity_name}] axes={valid_axes} benchmark_n={benchmark_n} "
+            f"snap_pool={snap_pool_n} lowacc_pool={lowacc_pool_n} n_experiment={n_experiment}",
+            flush=True,
+        )
 
         for axis in valid_axes:
             contamination_pool = prepared["snap_pool"] if axis == "snapping" else prepared["lowacc_pool"]
@@ -163,6 +221,7 @@ def run_core_factorial(
                                     maxent_background_n=maxent_background_n,
                                     rf_xgb_pa_ratio=rf_xgb_pa_ratio,
                                     maxent_n_cpus=1,
+                                    n_experiment=n_experiment,
                                 )
                             except Exception as e:
                                 row = {
@@ -180,6 +239,7 @@ def run_core_factorial(
                             row["species"] = prepared["species"]
                             row["category"] = prepared["category"]
                             row["entity_type"] = prepared["entity_type"]
+                            row["n_experiment"] = n_experiment
                             rows.append(row)
 
                             if len(rows) % checkpoint_every == 0:
@@ -216,6 +276,7 @@ def run_benchmark_sanity_check(
 
     for entity_name in entity_names:
         prepared = _prepare_entity_data(master_table, entity_name)
+        benchmark_n = len(prepared["benchmark"])
 
         for replicate in range(n_replicates):
             seed = derive_seed(master_seed, entity_name, "benchmark", 0, replicate)
@@ -239,6 +300,7 @@ def run_benchmark_sanity_check(
                             maxent_background_n=maxent_background_n,
                             rf_xgb_pa_ratio=rf_xgb_pa_ratio,
                             maxent_n_cpus=1,
+                            n_experiment=benchmark_n,
                         )
                     except Exception as e:
                         row = {
