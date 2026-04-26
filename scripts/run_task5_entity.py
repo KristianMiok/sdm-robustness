@@ -8,6 +8,7 @@ from sdm_robustness.execution.runner import (
     load_panel_and_master,
     run_benchmark_sanity_check,
     run_core_factorial,
+    run_grid_b_factorial,
 )
 
 
@@ -80,6 +81,31 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Override n_experiment (force constant sample size across sub-jobs)",
     )
+    parser.add_argument(
+        "--grid",
+        choices=["A", "B"],
+        default="A",
+        help="A = legacy 6-level grid (Grid A). B = Lucian's asymmetric grid with Tier 2/3 metrics.",
+    )
+    parser.add_argument(
+        "--snap-levels",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Override snapping levels for Grid B (default: 0 1 2 5)",
+    )
+    parser.add_argument(
+        "--lowacc-levels",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Override lowacc levels for Grid B (default: 0 3 10 20)",
+    )
+    parser.add_argument(
+        "--no-surfaces",
+        action="store_true",
+        help="Grid B only: skip saving suitability surface parquets (faster, smaller output)",
+    )
     return parser.parse_args()
 
 
@@ -103,6 +129,23 @@ def main() -> int:
             n_replicates=args.n_replicates_default,
         )
         print(f"Wrote: {benchmark_path}")
+        return 0
+
+    if args.grid == "B":
+        snap_levels = tuple(args.snap_levels) if args.snap_levels else (0, 1, 2, 5)
+        lowacc_levels = tuple(args.lowacc_levels) if args.lowacc_levels else (0, 3, 10, 20)
+        results_path = run_grid_b_factorial(
+            panel,
+            master_df,
+            output_dir=output_dir,
+            algorithms=tuple(args.algorithms),
+            scale_tracks=tuple(args.tracks),
+            snap_levels_pct=snap_levels,
+            lowacc_levels_pct=lowacc_levels,
+            n_replicates=args.n_replicates_default,
+            save_surfaces=not args.no_surfaces,
+        )
+        print(f"Wrote: {results_path}")
         return 0
 
     results_path = run_core_factorial(

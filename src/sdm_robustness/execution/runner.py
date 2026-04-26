@@ -9,6 +9,7 @@ from sdm_robustness.config import load_final_panel
 from sdm_robustness.execution import get_panel_entity
 from sdm_robustness.io import load_master_table
 from sdm_robustness.pipeline import fit_cv_cell, prepare_accessible_area
+from sdm_robustness.metrics.domain_map import load_domain_map
 from sdm_robustness.utils.repro import derive_seed
 
 
@@ -250,6 +251,252 @@ def run_core_factorial(
                                 _checkpoint_rows(rows, checkpoint_path)
 
     _checkpoint_rows(rows, final_path)
+    return final_path
+
+
+def run_grid_b_factorial(
+    species_panel: pd.DataFrame,
+    master_table: pd.DataFrame,
+    *,
+    output_dir: Path | str,
+    algorithms: tuple[str, ...] = ("random_forest", "xgboost", "maxent"),
+    snap_levels_pct: tuple[int, ...] = (0, 1, 2, 5),
+    lowacc_levels_pct: tuple[int, ...] = (0, 3, 10, 20),
+    scale_tracks: tuple[str, ...] = ("local_only", "upstream_only", "combined"),
+    n_replicates: int = 30,
+    master_seed: int = 20260426,
+    maxent_background_n: int = 10_000,
+    rf_xgb_pa_ratio: float = 1.0,
+    n_splits: int = 5,
+    looo_threshold: int = 15,
+    checkpoint_every: int = 50,
+    domain_map_path: str | Path = "data/variable_domain_mapping.csv",
+    save_surfaces: bool = True,
+) -> Path:
+    """Grid B execution: full benchmark N, asymmetric levels, Tier 2/3 metrics.
+
+    Differences from run_core_factorial:
+      - N_experiment = full benchmark (no subsampling cap)
+      - Snapping levels: 0/1/2/5 ; lowacc levels: 0/3/10/20
+      - Pre-computes benchmark importance + surface once per (entity, alg, track),
+        passes them into all contaminated cells for Tier 2/3 metrics
+      - Saves full importance vectors as separate parquet
+      - Saves benchmark suitability surfaces and one representative replicate
+        per (entity x axis x max-level) for spatial mismatch figures
+      - Every row tagged with grid_id="B"
+    """
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    surfaces_dir = output_dir / "surfaces"
+    if save_surfaces:
+        surfaces_dir.mkdir(parents=True, exist_ok=True)
+
+    rows: list[dict] = []
+    importance_rows: list[dict] = []
+    checkpoint_path = output_dir / "results_raw.checkpoint.parquet"
+    final_path = output_dir / "results_raw.parquet"
+    importance_path = output_dir / "variable_importance_vectors.parquet"
+
+    domain_map = load_domain_map(domain_map_path)
+    entity_names = species_panel["entity"].tolist()
+
+    for entity_name in entity_names:
+        prepared = _prepare_entity_data(master_table, entity_name)
+        panel_row = prepared["panel_row"]
+        valid_axes = _axes_for_panel_row(panel_row, ("snapping", "lowacc"))
+        benchmark_n = len(prepared["benchmark"])
+        n_experiment = benchmark_n  # Grid B: full benchmark, no cap
+
+        print(
+            f"[{entity_name}] Grid B: axes={valid_axes} benchmark_n={benchmark_n} "
+            f"n_experiment={n_experiment}",
+            flush=True,
+        )
+
+        # ===== STEP 1: Pre-compute benchmark artifacts per (algorithm, track) =====
+        bench_artifacts: dict[tuple[str, str], dict] = {}
+        for algorithm in algorithms:
+            for track in scale_tracks:
+                bench_seed = derive_seed(master_seed, entity_name, "benchmark", 0, 0)
+                # Use the snap_pool as a placeholder contamination pool — won't be used at level=0
+                pool_for_bench = prepared["snap_pool"] if "snapping" in valid_axes else prepared["lowacc_pool"]
+                try:
+                    bench_row = fit_cv_cell(
+                        benchmark=prepared["benchmark"],
+                        contamination_pool=pool_for_bench,
+                        accessible_area=prepared["accessible_area"],
+                        entity=entity_name,
+                        algorithm=algorithm,
+                        track=track,
+                        axis="benchmark",
+                        level=0,
+                        replicate=0,
+                        seed=bench_seed,
+                        n_splits=n_splits,
+                        looo_threshold=looo_threshold,
+                        maxent_background_n=maxent_background_n,
+                        rf_xgb_pa_ratio=rf_xgb_pa_ratio,
+                        maxent_n_cpus=1,
+                        n_experiment=n_experiment,
+                        return_artifacts=True,
+                        domain_map=domain_map,
+                    )
+                except Exception as e:
+                    print(f"[{entity_name}/{algorithm}/{track}] benchmark FAILED: {e}", flush=True)
+                    bench_artifacts[(algorithm, track)] = {"importance": None, "surface": None}
+                    continue
+
+                if bench_row.get("status") != "ok":
+                    print(f"[{entity_name}/{algorithm}/{track}] benchmark status={bench_row.get('status')}", flush=True)
+                    bench_artifacts[(algorithm, track)] = {"importance": None, "surface": None}
+                    continue
+
+                # Capture artifacts before they're stripped
+                bench_imp = bench_row.pop("_run_importance", None)
+                bench_surf = bench_row.pop("_run_surface", None)
+                bench_artifacts[(algorithm, track)] = {
+                    "importance": bench_imp,
+                    "surface": bench_surf,
+                }
+
+                # Persist benchmark surface
+                if save_surfaces and bench_surf is not None and len(bench_surf) > 0:
+                    acc_subc = prepared["accessible_area"]["subc_id"].values
+                    surface_df = pd.DataFrame({
+                        "subc_id": acc_subc[: len(bench_surf)],
+                        "predicted_probability": bench_surf,
+                    })
+                    safe_entity = entity_name.replace(" ", "_").replace("(", "").replace(")", "")
+                    surf_path = surfaces_dir / f"{safe_entity}_{algorithm}_{track}_benchmark.parquet"
+                    surface_df.to_parquet(surf_path, index=False)
+
+                # Persist importance vector
+                if bench_imp is not None:
+                    for var, imp in bench_imp.items():
+                        importance_rows.append({
+                            "entity": entity_name,
+                            "grid_id": "B",
+                            "axis": "benchmark",
+                            "level": 0,
+                            "replicate": 0,
+                            "algorithm": algorithm,
+                            "track": track,
+                            "variable": var,
+                            "importance": float(imp) if imp is not None else float("nan"),
+                        })
+
+                # Save benchmark row to results
+                bench_row["species"] = prepared["species"]
+                bench_row["category"] = prepared["category"]
+                bench_row["entity_type"] = prepared["entity_type"]
+                bench_row["n_experiment"] = n_experiment
+                bench_row["grid_id"] = "B"
+                rows.append(bench_row)
+
+        # ===== STEP 2: Loop over contaminated cells =====
+        for axis in valid_axes:
+            levels = snap_levels_pct if axis == "snapping" else lowacc_levels_pct
+            contamination_pool = prepared["snap_pool"] if axis == "snapping" else prepared["lowacc_pool"]
+            max_level = max(levels)
+
+            for level in levels:
+                if level == 0:
+                    continue  # benchmark already captured above
+
+                for replicate in range(n_replicates):
+                    seed = derive_seed(master_seed, entity_name, axis, level, replicate)
+
+                    for algorithm in algorithms:
+                        for track in scale_tracks:
+                            artifacts = bench_artifacts.get((algorithm, track), {})
+                            bench_imp = artifacts.get("importance")
+                            bench_surf = artifacts.get("surface")
+
+                            # Save artifacts only for one representative replicate at max level
+                            return_artifacts = (
+                                save_surfaces
+                                and level == max_level
+                                and replicate == 0
+                            )
+
+                            try:
+                                row = fit_cv_cell(
+                                    benchmark=prepared["benchmark"],
+                                    contamination_pool=contamination_pool,
+                                    accessible_area=prepared["accessible_area"],
+                                    entity=entity_name,
+                                    algorithm=algorithm,
+                                    track=track,
+                                    axis=axis,
+                                    level=level,
+                                    replicate=replicate,
+                                    seed=seed,
+                                    n_splits=n_splits,
+                                    looo_threshold=looo_threshold,
+                                    maxent_background_n=maxent_background_n,
+                                    rf_xgb_pa_ratio=rf_xgb_pa_ratio,
+                                    maxent_n_cpus=1,
+                                    n_experiment=n_experiment,
+                                    benchmark_importance=bench_imp,
+                                    benchmark_surface=bench_surf,
+                                    domain_map=domain_map,
+                                    return_artifacts=return_artifacts,
+                                )
+                            except Exception as e:
+                                row = {
+                                    "entity": entity_name,
+                                    "algorithm": algorithm,
+                                    "track": track,
+                                    "axis": axis,
+                                    "level": level,
+                                    "replicate": replicate,
+                                    "seed": seed,
+                                    "status": "error",
+                                    "error_message": str(e),
+                                }
+
+                            # Capture run importance for separate parquet
+                            run_imp = row.pop("_run_importance", None) if isinstance(row, dict) else None
+                            run_surf = row.pop("_run_surface", None) if isinstance(row, dict) else None
+
+                            if run_imp is not None:
+                                for var, imp in run_imp.items():
+                                    importance_rows.append({
+                                        "entity": entity_name,
+                                        "grid_id": "B",
+                                        "axis": axis,
+                                        "level": level,
+                                        "replicate": replicate,
+                                        "algorithm": algorithm,
+                                        "track": track,
+                                        "variable": var,
+                                        "importance": float(imp) if imp is not None else float("nan"),
+                                    })
+
+                            # Save representative contaminated surface
+                            if save_surfaces and return_artifacts and run_surf is not None and len(run_surf) > 0:
+                                acc_subc = prepared["accessible_area"]["subc_id"].values
+                                surf_df = pd.DataFrame({
+                                    "subc_id": acc_subc[: len(run_surf)],
+                                    "predicted_probability": run_surf,
+                                })
+                                safe_entity = entity_name.replace(" ", "_").replace("(", "").replace(")", "")
+                                surf_path = surfaces_dir / f"{safe_entity}_{algorithm}_{track}_{axis}_max.parquet"
+                                surf_df.to_parquet(surf_path, index=False)
+
+                            row["species"] = prepared["species"]
+                            row["category"] = prepared["category"]
+                            row["entity_type"] = prepared["entity_type"]
+                            row["n_experiment"] = n_experiment
+                            row["grid_id"] = "B"
+                            rows.append(row)
+
+                            if len(rows) % checkpoint_every == 0:
+                                _checkpoint_rows(rows, checkpoint_path)
+
+    _checkpoint_rows(rows, final_path)
+    if importance_rows:
+        pd.DataFrame(importance_rows).to_parquet(importance_path, index=False)
     return final_path
 
 

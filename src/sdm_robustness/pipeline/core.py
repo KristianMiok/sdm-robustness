@@ -14,7 +14,20 @@ except ImportError:  # pragma: no cover
     MaxentModel = None
 
 from sdm_robustness.execution import assign_basin_folds
-from sdm_robustness.metrics import compute_performance_metrics
+from sdm_robustness.metrics import (
+    compute_performance_metrics,
+    spearman_importance_stability,
+    topk_jaccard,
+    centroid_displacement,
+    niche_breadth_change,
+    schoeners_d,
+    warrens_i,
+    range_area_change,
+    spatial_mismatch_summary,
+    compute_domain_importance_shift,
+    domain_rank_stability,
+)
+from sdm_robustness.metrics.domain_map import aggregate_to_domain_share
 
 
 @dataclass
@@ -231,6 +244,43 @@ def predict_suitability_raster(
     raise NotImplementedError("Raster/network projection is not implemented in Phase 1.")
 
 
+def extract_importance(model, feature_names: list[str], x_eval=None, y_eval=None) -> dict[str, float]:
+    """Return {feature_name: importance} for any of the 3 supported algorithms.
+
+    For RF/XGBoost: uses model.feature_importances_ (sklearn API, fast).
+    For Maxent (elapid): uses permutation_importance_scores(x_eval, y_eval),
+    which requires evaluation data and is significantly slower.
+    """
+    if hasattr(model, "feature_importances_"):
+        importances = np.asarray(model.feature_importances_, dtype=float)
+        return dict(zip(feature_names, importances))
+
+    if hasattr(model, "permutation_importance_scores"):
+        if x_eval is None or y_eval is None:
+            return {name: float("nan") for name in feature_names}
+        try:
+            scores_2d = model.permutation_importance_scores(
+                x_eval, y_eval, n_repeats=5, n_jobs=-1
+            )
+            mean_scores = np.asarray(scores_2d, dtype=float).mean(axis=1)
+            return dict(zip(feature_names, mean_scores))
+        except Exception:
+            return {name: float("nan") for name in feature_names}
+
+    return {name: float("nan") for name in feature_names}
+
+
+def predict_suitability_surface(model, accessible_area_features) -> np.ndarray:
+    """Predict probability over rows in accessible_area_features. Returns 1D array."""
+    if hasattr(model, "predict_proba"):
+        scores = model.predict_proba(accessible_area_features)
+        scores = np.asarray(scores)
+        if scores.ndim == 2:
+            scores = scores[:, -1]
+        return scores
+    return np.asarray(model.predict(accessible_area_features), dtype=float)
+
+
 def fit_cv_cell(
     *,
     benchmark: pd.DataFrame,
@@ -249,6 +299,10 @@ def fit_cv_cell(
     rf_xgb_pa_ratio: float = 1.0,
     maxent_n_cpus: int = 1,
     n_experiment: int | None = None,
+    benchmark_importance: dict[str, float] | None = None,
+    benchmark_surface: np.ndarray | None = None,
+    domain_map: dict[str, str] | None = None,
+    return_artifacts: bool = False,
 ) -> dict[str, Any]:
     feat_cols = get_track_columns(benchmark, track)
     if not feat_cols:
@@ -365,7 +419,116 @@ def fit_cv_cell(
         vals = [m[key] for m in fold_metrics]
         agg[key] = float(np.nanmean(vals))
 
-    return {
+    # === Tier 2/3 metrics (only computed if benchmark artifacts provided) ===
+    tier23: dict[str, Any] = {}
+
+    # Fast path: legacy callers (no benchmark artifacts, no return_artifacts)
+    # skip the extra fit + prediction entirely.
+    needs_tier23 = (
+        benchmark_importance is not None
+        or benchmark_surface is not None
+        or return_artifacts
+    )
+
+    if not needs_tier23:
+        return {
+            "entity": entity,
+            "algorithm": algorithm,
+            "track": track,
+            "axis": axis,
+            "level": level,
+            "replicate": replicate,
+            "seed": seed,
+            "status": "ok",
+            "n_folds_completed": len(fold_metrics),
+            "n_features": int(len(kept)),
+            "benchmark_presence_n": int(len(contaminated_pres)),
+            "contrast_pool_n": int(len(acc)),
+            "accessible_area_segment_count": int(len(acc)),
+            **agg,
+        }
+
+    # Refit on FULL contaminated set to get this run's importance + surface
+    if algorithm == "maxent":
+        bg_n_final = min(maxent_background_n, len(acc))
+    else:
+        bg_n_final = min(int(round(len(contaminated_pres) * rf_xgb_pa_ratio)), len(acc))
+
+    final_neg = acc.sample(n=bg_n_final, replace=False, random_state=seed)
+    final_x = pd.concat([contaminated_pres[kept], final_neg[kept]], axis=0)
+    n_pres = len(contaminated_pres)
+    n_neg = len(final_x) - n_pres
+    final_y = np.array([1] * n_pres + [0] * n_neg)
+    final_model = build_model(algorithm, seed=seed, n_jobs=-1, maxent_n_cpus=maxent_n_cpus)
+    try:
+        final_model.fit(final_x, final_y)
+        run_importance = extract_importance(final_model, kept, x_eval=final_x, y_eval=final_y)
+        run_surface = predict_suitability_surface(final_model, acc[kept])
+    except Exception:
+        run_importance = {name: float("nan") for name in kept}
+        run_surface = np.array([])
+
+    if benchmark_importance is not None:
+        b_imp = np.array([benchmark_importance.get(k, np.nan) for k in kept])
+        c_imp = np.array([run_importance.get(k, np.nan) for k in kept])
+        try:
+            tier23["importance_spearman"] = spearman_importance_stability(b_imp, c_imp)
+        except Exception:
+            tier23["importance_spearman"] = float("nan")
+        try:
+            tier23["importance_jaccard_top5"] = topk_jaccard(b_imp, c_imp, k=5)
+            tier23["importance_jaccard_top10"] = topk_jaccard(b_imp, c_imp, k=10)
+        except Exception:
+            tier23["importance_jaccard_top5"] = float("nan")
+            tier23["importance_jaccard_top10"] = float("nan")
+
+        try:
+            bench_pres_x = benchmark[kept].fillna(medians).values
+            cont_pres_x = contaminated_pres[kept].values
+            tier23["niche_centroid_disp"] = centroid_displacement(bench_pres_x, cont_pres_x)
+            tier23["niche_breadth_change"] = niche_breadth_change(bench_pres_x, cont_pres_x)
+        except Exception:
+            tier23["niche_centroid_disp"] = float("nan")
+            tier23["niche_breadth_change"] = float("nan")
+
+        if domain_map is not None:
+            try:
+                bench_share = aggregate_to_domain_share(benchmark_importance, domain_map)
+                cont_share = aggregate_to_domain_share(run_importance, domain_map)
+                b_dom = {k.replace("_share", ""): v for k, v in bench_share.items()}
+                c_dom = {k.replace("_share", ""): v for k, v in cont_share.items()}
+                shift = compute_domain_importance_shift(b_dom, c_dom)
+                for k, v in shift.items():
+                    if k.endswith("_share_shift"):
+                        tier23[k.replace("_share_shift", "_shift")] = v
+                tier23["domain_rank_stability"] = domain_rank_stability(b_dom, c_dom)
+            except Exception:
+                for d in ("CLI", "TOP", "SOL", "LAC"):
+                    tier23[f"{d}_shift"] = float("nan")
+                tier23["domain_rank_stability"] = float("nan")
+
+    if benchmark_surface is not None and len(run_surface) > 0:
+        try:
+            tier23["schoener_d"] = schoeners_d(benchmark_surface, run_surface)
+            tier23["warren_i"] = warrens_i(benchmark_surface, run_surface)
+        except Exception:
+            tier23["schoener_d"] = float("nan")
+            tier23["warren_i"] = float("nan")
+        try:
+            tier23["range_area_pct_change_05"] = range_area_change(
+                benchmark_surface, run_surface, threshold=0.5
+            )
+            mismatch = spatial_mismatch_summary(benchmark_surface, run_surface, threshold=0.5)
+            tier23["gain_segments"] = int(mismatch.get("gain_cells", 0))
+            tier23["loss_segments"] = int(mismatch.get("loss_cells", 0))
+            tier23["stable_segments"] = int(mismatch.get("stable_presence_cells", 0))
+        except Exception:
+            tier23["range_area_pct_change_05"] = float("nan")
+            tier23["gain_segments"] = 0
+            tier23["loss_segments"] = 0
+            tier23["stable_segments"] = 0
+
+    result = {
         "entity": entity,
         "algorithm": algorithm,
         "track": track,
@@ -378,5 +541,13 @@ def fit_cv_cell(
         "n_features": int(len(kept)),
         "benchmark_presence_n": int(len(contaminated_pres)),
         "contrast_pool_n": int(len(acc)),
+        "accessible_area_segment_count": int(len(acc)),
         **agg,
+        **tier23,
     }
+
+    if return_artifacts:
+        result["_run_importance"] = run_importance
+        result["_run_surface"] = run_surface
+
+    return result
