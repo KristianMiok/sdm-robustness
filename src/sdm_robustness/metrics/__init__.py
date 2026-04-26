@@ -19,6 +19,7 @@ from sdm_robustness.metrics.core import (
 )
 
 __all__ = [
+    "boyce_index",
     "compute_performance_metrics",
     "compute_delta_performance",
     "spearman_importance_stability",

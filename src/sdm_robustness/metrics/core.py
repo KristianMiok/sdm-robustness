@@ -11,6 +11,7 @@ from sklearn.metrics import (
     confusion_matrix,
     brier_score_loss,
 )
+from sdm_robustness.metrics.boyce import boyce_index
 
 
 def compute_performance_metrics(
@@ -30,12 +31,18 @@ def compute_performance_metrics(
     specificity = tn / (tn + fp) if (tn + fp) else np.nan
     tss = sensitivity + specificity - 1 if np.isfinite(sensitivity) and np.isfinite(specificity) else np.nan
 
+    # Continuous Boyce index (Hirzel et al. 2006, ecospat-style)
+    presence_scores = y_score[y_true == 1]
+    background_scores = y_score
+    boyce = boyce_index(presence_scores, background_scores)
+
     return {
         "auc": float(auc),
         "brier": float(brier),
         "sensitivity": float(sensitivity),
         "specificity": float(specificity),
         "tss": float(tss),
+        "boyce": float(boyce),
     }
 
 
