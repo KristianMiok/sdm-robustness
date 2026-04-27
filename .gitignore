@@ -110,3 +110,25 @@ results/pilot_cell/
 results/pilot_cv/
 results/pilot_matrix/
 results/pilot_prep/
+
+# Master data file (252 MB — too large for GitHub)
+data/combined_data_true_master.csv
+
+# Untracked terminal accidents
+PY
+done
+err_msgs
+errs
+for
+if
+import
+n=0
+printf
+total_err
+total_ok
+total_rows
+
+# Old Slurm scripts dumped at repo root (now in run_scripts/)
+/run_mx_*.sh
+/run_task5_astacus*.sh
+/run_vega_smoketest.sh

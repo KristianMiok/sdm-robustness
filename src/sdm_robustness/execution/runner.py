@@ -412,8 +412,9 @@ def run_grid_b_factorial(
                             bench_imp = artifacts.get("importance")
                             bench_surf = artifacts.get("surface")
 
-                            # Save artifacts only for one representative replicate at max level
-                            return_artifacts = (
+                            # Always request artifacts (so importance vector is captured for every run);
+                            # surface saving to disk is gated separately below.
+                            save_surface_for_this_cell = (
                                 save_surfaces
                                 and level == max_level
                                 and replicate == 0
@@ -440,7 +441,7 @@ def run_grid_b_factorial(
                                     benchmark_importance=bench_imp,
                                     benchmark_surface=bench_surf,
                                     domain_map=domain_map,
-                                    return_artifacts=return_artifacts,
+                                    return_artifacts=True,
                                 )
                             except Exception as e:
                                 row = {
@@ -474,7 +475,7 @@ def run_grid_b_factorial(
                                     })
 
                             # Save representative contaminated surface
-                            if save_surfaces and return_artifacts and run_surf is not None and len(run_surf) > 0:
+                            if save_surface_for_this_cell and run_surf is not None and len(run_surf) > 0:
                                 acc_subc = prepared["accessible_area"]["subc_id"].values
                                 surf_df = pd.DataFrame({
                                     "subc_id": acc_subc[: len(run_surf)],

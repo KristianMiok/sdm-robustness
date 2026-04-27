@@ -247,23 +247,42 @@ def predict_suitability_raster(
 def extract_importance(model, feature_names: list[str], x_eval=None, y_eval=None) -> dict[str, float]:
     """Return {feature_name: importance} for any of the 3 supported algorithms.
 
-    For RF/XGBoost: uses model.feature_importances_ (sklearn API, fast).
-    For Maxent (elapid): uses permutation_importance_scores(x_eval, y_eval),
-    which requires evaluation data and is significantly slower.
+    For RF/XGBoost: uses model.feature_importances_ (sklearn API).
+    For Maxent (elapid): uses |beta_scores_| (coefficient magnitudes after
+    feature transformation). This is the standard Maxent variable contribution
+    metric (Phillips et al. 2006) and is fast and memory-efficient. Note:
+    elapid expands raw predictors into (linear + quadratic + product + hinge +
+    categorical) feature classes, so beta_scores_ has more entries than the
+    raw feature list. We aggregate by raw feature name prefix.
     """
     if hasattr(model, "feature_importances_"):
         importances = np.asarray(model.feature_importances_, dtype=float)
         return dict(zip(feature_names, importances))
 
-    if hasattr(model, "permutation_importance_scores"):
-        if x_eval is None or y_eval is None:
-            return {name: float("nan") for name in feature_names}
+    # Maxent path: use coefficient magnitudes
+    beta = getattr(model, "beta_scores_", None)
+    if beta is not None:
         try:
-            scores_2d = model.permutation_importance_scores(
-                x_eval, y_eval, n_repeats=5, n_jobs=-1
-            )
-            mean_scores = np.asarray(scores_2d, dtype=float).mean(axis=1)
-            return dict(zip(feature_names, mean_scores))
+            beta = np.asarray(beta, dtype=float)
+            # Get the elapid feature names (post-transformation) if available
+            tx = getattr(model, "transformer", None)
+            if tx is not None and hasattr(tx, "feature_names_"):
+                tx_names = list(tx.feature_names_)
+            else:
+                # Fall back: assume one beta per raw feature (linear-only model)
+                tx_names = list(feature_names)
+
+            # Aggregate beta magnitudes by raw feature name (each raw feature
+            # contributes to several elapid feature columns: linear, quadratic,
+            # hinge, product, etc.). We sum |beta| over all expansions per raw var.
+            agg = {name: 0.0 for name in feature_names}
+            for tx_name, b in zip(tx_names, beta):
+                # tx_name is something like "l_CLI1", "l_CLI1^2", "l_CLI1*l_CLI2", "hinge_l_CLI1_0.3"
+                # We attribute |b| to each raw feature mentioned in tx_name.
+                for raw in feature_names:
+                    if raw in str(tx_name):
+                        agg[raw] += abs(float(b))
+            return agg
         except Exception:
             return {name: float("nan") for name in feature_names}
 
