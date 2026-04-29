@@ -103,13 +103,6 @@ Outputs land in `results/task1_audit/`. See the generated `technical_memo.md` fo
 
 See `configs/frozen_design.yaml` and `docs/protocols/frozen_design.md`. These are locked — if something looks wrong, raise it before execution, not mid-run.
 
-## Authors and contact
-
-- **Kristian Miok** (first author, University of Ljubljana) — methods, code, execution
-- **Olga N. Petko** (second author) — figures, consistency with Petko et al. 2026
-- **Lucian Pârvulescu** (last, corresponding) — ecological interpretation, writing lead
-- Additional Ljubljana co-authors TBD
-
 ## License
 
 TBD before submission. Code will likely be MIT or BSD-3; data is owned by Petko et al. 2026.
