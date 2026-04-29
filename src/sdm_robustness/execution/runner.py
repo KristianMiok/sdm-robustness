@@ -397,6 +397,8 @@ def run_grid_b_factorial(
         for axis in valid_axes:
             levels = snap_levels_pct if axis == "snapping" else lowacc_levels_pct
             contamination_pool = prepared["snap_pool"] if axis == "snapping" else prepared["lowacc_pool"]
+            if not levels:
+                continue
             max_level = max(levels)
 
             for level in levels:

@@ -132,8 +132,33 @@ def main() -> int:
         return 0
 
     if args.grid == "B":
-        snap_levels = tuple(args.snap_levels) if args.snap_levels else (0, 1, 2, 5)
-        lowacc_levels = tuple(args.lowacc_levels) if args.lowacc_levels else (0, 3, 10, 20)
+        # Grid B defaults follow Lucian's asymmetric design:
+        #   snapping: 0/1/2/5
+        #   lowacc:   0/3/10/20
+        #
+        # For smoke tests and VEGA sub-jobs, respect explicit --axes and --levels.
+        # Example:
+        #   --grid B --axes snapping --levels 1
+        # should run only snapping level 1, not the full Grid B.
+        requested_axes = tuple(args.axes) if args.axes else ("snapping", "lowacc")
+
+        if args.levels:
+            # Manual override for smoke tests / sub-jobs.
+            snap_levels = tuple(args.levels) if "snapping" in requested_axes else tuple()
+            lowacc_levels = tuple(args.levels) if "lowacc" in requested_axes else tuple()
+        else:
+            # Full Grid B defaults, with optional axis-specific overrides.
+            snap_levels = (
+                tuple(args.snap_levels)
+                if args.snap_levels
+                else ((0, 1, 2, 5) if "snapping" in requested_axes else tuple())
+            )
+            lowacc_levels = (
+                tuple(args.lowacc_levels)
+                if args.lowacc_levels
+                else ((0, 3, 10, 20) if "lowacc" in requested_axes else tuple())
+            )
+
         results_path = run_grid_b_factorial(
             panel,
             master_df,
