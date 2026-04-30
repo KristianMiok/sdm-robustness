@@ -132,3 +132,9 @@ total_rows
 /run_mx_*.sh
 /run_task5_astacus*.sh
 /run_vega_smoketest.sh
+
+# Local delivery/result bundles
+results/grid_b_delivery_lucian*
+results/grid_b_merged/
+results/task5c_benchmark_stability_merged/
+results/task5c_delivery_lucian_partial*
