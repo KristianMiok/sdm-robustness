@@ -138,3 +138,14 @@ results/grid_b_delivery_lucian*
 results/grid_b_merged/
 results/task5c_benchmark_stability_merged/
 results/task5c_delivery_lucian_partial*
+
+# Local analysis outputs (Grid A and Task 5c summary tables, not source code)
+analysis/
+
+# Task 5c chunk mappings (regenerated each run)
+results/task5c_failed_chunks.tsv
+results/task5c_missing_chunks.tsv
+
+# Auto-generated Slurm launcher scripts for Grid B (200+ files, generated programmatically)
+run_scripts/grid_b_maxent/
+run_scripts/grid_b_rfxgb/

@@ -106,6 +106,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Grid B only: skip saving suitability surface parquets (faster, smaller output)",
     )
+    parser.add_argument(
+        "--master-seed",
+        type=int,
+        default=20260426,
+        help="Master seed for reproducible benchmark-stability chunks",
+    )
     return parser.parse_args()
 
 
@@ -127,6 +133,7 @@ def main() -> int:
             algorithms=tuple(args.algorithms),
             scale_tracks=tuple(args.tracks),
             n_replicates=args.n_replicates_default,
+            master_seed=args.master_seed,
         )
         print(f"Wrote: {benchmark_path}")
         return 0
