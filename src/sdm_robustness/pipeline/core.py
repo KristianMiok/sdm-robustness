@@ -371,7 +371,7 @@ def fit_cv_cell(
         if pres_train.empty or pres_test.empty:
             continue
 
-        if algorithm in {"random_forest", "xgboost"}:
+        if algorithm in {"random_forest", "xgboost", "symba"}:
             n_neg = int(round(len(contaminated_pres) * rf_xgb_pa_ratio))
             if n_neg > len(acc):
                 raise ValueError(
