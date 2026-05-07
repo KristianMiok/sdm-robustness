@@ -9,6 +9,10 @@ from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 
 try:
+    from symba import SymbaClassifier
+except ImportError:  # pragma: no cover
+    SymbaClassifier = None
+try:
     from elapid import MaxentModel
 except ImportError:  # pragma: no cover
     MaxentModel = None
@@ -114,6 +118,14 @@ def tune_hyperparameters(
             "random_state": seed,
             "n_jobs": -1,
         }
+    if algorithm == "symba":
+        return {
+            "n_estimators": 160,
+            "max_depth": (3, 4, 5),
+            "random_state": seed,
+            "autotune": False,
+            "bagging_repeats": 1,
+        }
     if algorithm == "maxent":
         return {
             "feature_types": ["linear", "hinge", "product"],
@@ -166,6 +178,20 @@ def build_model(
             eval_metric="logloss",
             random_state=seed,
             n_jobs=n_jobs,
+        )
+
+    if algorithm == "symba":
+        if SymbaClassifier is None:
+            raise ImportError(
+                "symba is not installed; "
+                "install via `maturin develop --release` in the symba repo."
+            )
+        return SymbaClassifier(
+            n_estimators=160,
+            max_depth=(3, 4, 5),
+            random_state=seed,
+            autotune=False,
+            bagging_repeats=1,
         )
 
     if algorithm == "maxent":
