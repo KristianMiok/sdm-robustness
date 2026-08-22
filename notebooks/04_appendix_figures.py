@@ -32,7 +32,7 @@ SNAP_ENTITIES = [
 
 ALG_ORDER  = ["random_forest", "xgboost", "maxent"]
 ALG_LABEL  = {"random_forest": "RF", "xgboost": "XGBoost", "maxent": "Maxent"}
-ALG_COLOR  = {"random_forest": "#1f77b4", "xgboost": "#ff7f0e", "maxent": "#2ca02c"}
+ALG_COLOR  = {"random_forest": "#1f77b4", "xgboost": "#d62728", "maxent": "#2ca02c"}
 AXIS_STYLE = {"snapping": "-", "lowacc": "--"}
 LEVELS     = [0, 5, 10, 20, 35, 50]
 
@@ -54,7 +54,7 @@ def load_entity_summary(entities, axes):
     """Load and summarize results for a list of entities, restricted to combined track."""
     frames, n_exp = [], {}
     for ent_id, _ in entities:
-        df = pd.read_parquet(f"results/task5_execution/{ent_id}/results_raw.parquet")
+        df = pd.read_parquet(f"results/task5_execution/{ent_id}/results_raw.parquet", engine="fastparquet")
         df_ok = df[(df["status"] == "ok") & (df["track"] == "combined")].copy()
         df_ok["entity_id"] = ent_id
         frames.append(df_ok)
@@ -111,7 +111,7 @@ def make_panel_figure(entities, axes, title_suffix, out_basename, summary, n_exp
             if i == 0:
                 ax.set_title(ALG_LABEL[alg], fontsize=13, fontweight="bold")
             if j == 0:
-                ax.set_ylabel(f"{ent_label}\n(n={nexp})", fontsize=9.5,
+                ax.set_ylabel(f"{ent_label}\n(n_exp={nexp})", fontsize=9.5,
                               rotation=0, ha="right", va="center", labelpad=12)
             if i == n_entities - 1:
                 ax.set_xlabel("contamination level (%)")

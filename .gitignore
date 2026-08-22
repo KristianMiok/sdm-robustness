@@ -149,3 +149,6 @@ results/task5c_missing_chunks.tsv
 # Auto-generated Slurm launcher scripts for Grid B (200+ files, generated programmatically)
 run_scripts/grid_b_maxent/
 run_scripts/grid_b_rfxgb/
+
+# Local merged Grid A results (regenerate with scripts/dual8/merge_grid_a.py)
+results/grid_a_merged/
