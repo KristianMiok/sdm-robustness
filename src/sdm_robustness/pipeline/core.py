@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+import hashlib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -296,6 +297,8 @@ def fit_cv_cell(
     benchmark_importance: dict[str, float] | None = None,
     benchmark_surface: np.ndarray | None = None,
     domain_map: dict[str, str] | None = None,
+    fold_map: dict[str, int] | None = None,
+    bg_seed: int | None = None,
     return_artifacts: bool = False,
 ) -> dict[str, Any]:
     feat_cols = get_track_columns(benchmark, track)
@@ -305,6 +308,9 @@ def fit_cv_cell(
     kept = clean_predictors(benchmark, feat_cols)
     benchmark_x = benchmark[kept].copy()
     medians = benchmark_x.median(numeric_only=True)
+    # T6: background draw is seeded independently of axis and level so that
+    # benchmark replicate r and contaminated replicate r share the realisation.
+    bg_base = int(bg_seed) if bg_seed is not None else int(seed)
 
     # Subsample benchmark to n_experiment if specified, so the training-set
     # size is held constant across contamination levels and axes.
@@ -328,11 +334,22 @@ def fit_cv_cell(
     acc = accessible_area[["subc_id", "basin_id"] + kept].copy()
     acc[kept] = acc[kept].fillna(medians)
 
-    pres_fold_map = assign_basin_folds(
-        contaminated_pres["basin_id"],
-        n_splits=n_splits,
-        looo_threshold=looo_threshold,
-    )
+    if fold_map is not None:
+        # T6: folds derived once from the clean benchmark. Basins introduced by
+        # contamination are assigned deterministically so they cannot shift the
+        # partition of the basins that were already there.
+        pres_fold_map = dict(fold_map)
+        n_f = (max(pres_fold_map.values()) + 1) if pres_fold_map else n_splits
+        for bid in contaminated_pres["basin_id"].astype(str).unique():
+            if bid not in pres_fold_map:
+                h = hashlib.sha256(bid.encode()).hexdigest()
+                pres_fold_map[bid] = int(h, 16) % n_f
+    else:
+        pres_fold_map = assign_basin_folds(
+            contaminated_pres["basin_id"],
+            n_splits=n_splits,
+            looo_threshold=looo_threshold,
+        )
     contaminated_pres["fold"] = contaminated_pres["basin_id"].astype(str).map(pres_fold_map)
 
     fold_metrics: list[dict[str, float]] = []
@@ -351,10 +368,10 @@ def fit_cv_cell(
                 raise ValueError(
                     f"Accessible area too small for pseudo-absence draw: need {n_neg}, have {len(acc)}"
                 )
-            neg = acc.sample(n=n_neg, replace=False, random_state=seed + int(fold)).copy()
+            neg = acc.sample(n=n_neg, replace=False, random_state=bg_base + int(fold)).copy()
         elif algorithm == "maxent":
             bg_n = min(maxent_background_n, len(acc))
-            neg = acc.sample(n=bg_n, replace=False, random_state=seed + int(fold)).copy()
+            neg = acc.sample(n=bg_n, replace=False, random_state=bg_base + int(fold)).copy()
         else:
             raise ValueError(f"Unknown algorithm: {algorithm}")
 
@@ -448,7 +465,7 @@ def fit_cv_cell(
     else:
         bg_n_final = min(int(round(len(contaminated_pres) * rf_xgb_pa_ratio)), len(acc))
 
-    final_neg = acc.sample(n=bg_n_final, replace=False, random_state=seed)
+    final_neg = acc.sample(n=bg_n_final, replace=False, random_state=bg_base)
     final_x = pd.concat([contaminated_pres[kept], final_neg[kept]], axis=0)
     n_pres = len(contaminated_pres)
     n_neg = len(final_x) - n_pres
