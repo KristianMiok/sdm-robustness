@@ -97,6 +97,9 @@ for alg in a.algorithms.split(","):
                          range_pct=range_area_change(b, c, threshold=0.5),
                          schoener=schoeners_d(b, c)))
         n_fit += 8
+        if (i + 1) % 3 == 0 or i == a.reps - 1:
+            Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+            pd.DataFrame(rows).to_csv(a.out, index=False)
         if i == 0 or (i + 1) % 5 == 0:
             print(f"  rep {i+1}/{a.reps}  fits={n_fit}  "
                   f"{(time.time()-t0)/max(n_fit,1):.1f} s/fit", flush=True)
