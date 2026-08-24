@@ -1,11 +1,13 @@
 import glob
 import numpy as np, pandas as pd
-fs = sorted(glob.glob("results/revision/t6_fold_*_random_forest.csv"))
+fs = sorted(glob.glob("results/revision/t6_fold_*_random_forest.csv") + glob.glob("results/revision/t6_fold_*_xgboost.csv"))
 if not fs:
     raise SystemExit("jos nema rezultata")
 for f in fs:
     D = pd.read_csv(f)
-    ent = f.split("t6_fold_")[1].rsplit("_random_forest", 1)[0].replace("_", " ")
+    stem = f.split("t6_fold_")[1].rsplit(".csv", 1)[0]
+    alg = "xgboost" if stem.endswith("_xgboost") else "random_forest"
+    ent = stem.rsplit("_" + alg, 1)[0].replace("_", " ") + f"  [{alg}]"
     b0 = D[D.level == 0].set_index(["rep", "regime"]).auc.rename("b0")
     D = D.merge(b0, left_on=["rep", "regime"], right_index=True, how="left")
     D["drop"] = D.auc - D.b0
