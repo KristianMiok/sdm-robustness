@@ -340,10 +340,15 @@ def fit_cv_cell(
         # partition of the basins that were already there.
         pres_fold_map = dict(fold_map)
         n_f = (max(pres_fold_map.values()) + 1) if pres_fold_map else n_splits
-        for bid in contaminated_pres["basin_id"].astype(str).unique():
+        counts = pd.Series(list(pres_fold_map.values())).value_counts()
+        load = {f: int(counts.get(f, 0)) for f in range(n_f)}
+        present = contaminated_pres["basin_id"].astype(str)
+        sizes = present.value_counts()
+        for bid in sorted(sizes.index, key=lambda b: (-int(sizes[b]), b)):
             if bid not in pres_fold_map:
-                h = hashlib.sha256(bid.encode()).hexdigest()
-                pres_fold_map[bid] = int(h, 16) % n_f
+                f = min(load, key=lambda k: (load[k], k))
+                pres_fold_map[bid] = f
+                load[f] += int(sizes[bid])
     else:
         pres_fold_map = assign_basin_folds(
             contaminated_pres["basin_id"],
