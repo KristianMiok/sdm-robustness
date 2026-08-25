@@ -314,10 +314,14 @@ def run_grid_b_factorial(
         )
 
         # ===== STEP 1: Pre-compute benchmark artifacts per (algorithm, track) =====
-        bench_artifacts: dict[tuple[str, str], dict] = {}
+        # T6: the benchmark arm is replicated, so contaminated replicate r has a
+        # benchmark counterpart drawn against the same background realisation.
+        bench_artifacts: dict[tuple[str, str, int], dict] = {}
         for algorithm in algorithms:
             for track in scale_tracks:
-                bench_seed = derive_seed(master_seed, entity_name, "benchmark", 0, 0)
+              for brep in range(n_replicates):
+                bench_seed = derive_seed(master_seed, entity_name, "benchmark", 0, brep)
+                bench_bg_seed = derive_seed(master_seed, entity_name, algorithm, track, brep)
                 # Use the snap_pool as a placeholder contamination pool — won't be used at level=0
                 pool_for_bench = prepared["snap_pool"] if "snapping" in valid_axes else prepared["lowacc_pool"]
                 try:
@@ -330,8 +334,9 @@ def run_grid_b_factorial(
                         track=track,
                         axis="benchmark",
                         level=0,
-                        replicate=0,
+                        replicate=brep,
                         seed=bench_seed,
+                        bg_seed=bench_bg_seed,
                         n_splits=n_splits,
                         looo_threshold=looo_threshold,
                         maxent_background_n=maxent_background_n,
@@ -343,24 +348,24 @@ def run_grid_b_factorial(
                     )
                 except Exception as e:
                     print(f"[{entity_name}/{algorithm}/{track}] benchmark FAILED: {e}", flush=True)
-                    bench_artifacts[(algorithm, track)] = {"importance": None, "surface": None}
+                    bench_artifacts[(algorithm, track, brep)] = {"importance": None, "surface": None}
                     continue
 
                 if bench_row.get("status") != "ok":
                     print(f"[{entity_name}/{algorithm}/{track}] benchmark status={bench_row.get('status')}", flush=True)
-                    bench_artifacts[(algorithm, track)] = {"importance": None, "surface": None}
+                    bench_artifacts[(algorithm, track, brep)] = {"importance": None, "surface": None}
                     continue
 
                 # Capture artifacts before they're stripped
                 bench_imp = bench_row.pop("_run_importance", None)
                 bench_surf = bench_row.pop("_run_surface", None)
-                bench_artifacts[(algorithm, track)] = {
+                bench_artifacts[(algorithm, track, brep)] = {
                     "importance": bench_imp,
                     "surface": bench_surf,
                 }
 
                 # Persist benchmark surface
-                if save_surfaces and bench_surf is not None and len(bench_surf) > 0:
+                if save_surfaces and brep == 0 and bench_surf is not None and len(bench_surf) > 0:
                     acc_subc = prepared["accessible_area"]["subc_id"].values
                     surface_df = pd.DataFrame({
                         "subc_id": acc_subc[: len(bench_surf)],
@@ -378,7 +383,7 @@ def run_grid_b_factorial(
                             "grid_id": "B",
                             "axis": "benchmark",
                             "level": 0,
-                            "replicate": 0,
+                            "replicate": brep,
                             "algorithm": algorithm,
                             "track": track,
                             "variable": var,
@@ -410,7 +415,7 @@ def run_grid_b_factorial(
 
                     for algorithm in algorithms:
                         for track in scale_tracks:
-                            artifacts = bench_artifacts.get((algorithm, track), {})
+                            artifacts = bench_artifacts.get((algorithm, track, replicate), {})
                             bench_imp = artifacts.get("importance")
                             bench_surf = artifacts.get("surface")
 
@@ -440,6 +445,8 @@ def run_grid_b_factorial(
                                     rf_xgb_pa_ratio=rf_xgb_pa_ratio,
                                     maxent_n_cpus=1,
                                     n_experiment=n_experiment,
+                                    bg_seed=derive_seed(master_seed, entity_name,
+                                                        algorithm, track, replicate),
                                     benchmark_importance=bench_imp,
                                     benchmark_surface=bench_surf,
                                     domain_map=domain_map,
