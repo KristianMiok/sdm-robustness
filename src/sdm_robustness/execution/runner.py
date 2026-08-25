@@ -7,6 +7,7 @@ import pandas as pd
 
 from sdm_robustness.config import load_final_panel
 from sdm_robustness.execution import get_panel_entity
+from sdm_robustness.execution.cv import assign_basin_folds
 from sdm_robustness.io import load_master_table
 from sdm_robustness.pipeline import fit_cv_cell, prepare_accessible_area
 from sdm_robustness.metrics.domain_map import load_domain_map
@@ -20,6 +21,49 @@ ALIEN_VALUES = {"Alien", "Introduced"}
 
 def _is_high_accuracy(series: pd.Series) -> pd.Series:
     return series.astype(str).isin(HIGH_VALUES)
+
+
+def split_reference_set(
+    bench: pd.DataFrame,
+    entity: str,
+    master_seed: int,
+    *,
+    target: float = 0.20,
+    basin_cap: float = 0.40,
+    min_train_basins: int = 16,
+) -> tuple[pd.DataFrame, pd.DataFrame | None]:
+    """T6: basin-blocked withholding of a fixed independent reference set.
+
+    Greedy over a seeded permutation of basins, keeping the achieved fraction
+    closest to `target`, but withholding at most `basin_cap` of the basins. The
+    cap protects the TRAINING side: without it the greedy prefers many small
+    basins and can leave training with a handful of large ones (A. torrentium:
+    4 basins of 39), which wrecks the fold balance and makes the reference set
+    ecologically unlike the training set. Deterministic given the entity name
+    and master seed, so every arm shares the identical split.
+    Returns (train, reference).
+    """
+    sizes = bench["basin_id"].astype(str).value_counts()
+    rng = np.random.default_rng(derive_seed(master_seed, entity, "reference", 0, 0))
+    nb = len(sizes)
+    # Withhold at most `basin_cap` of the basins, and never enough to push the
+    # training side below `min_train_basins` - that would flip it into the
+    # leave-one-out regime and change what the metric means.
+    max_held = min(int(np.floor(nb * basin_cap)), max(0, nb - min_train_basins))
+    held, cum, goal = [], 0, target * len(bench)
+    for bid in rng.permutation(np.asarray(sizes.index)):
+        if len(held) >= max_held:
+            break
+        k = int(sizes[bid])
+        if abs(cum + k - goal) < abs(cum - goal):
+            held.append(bid); cum += k
+    if not held or cum < 0.5 * goal:
+        # Not enough basins to withhold a meaningful reference set without
+        # starving the training side. Report it rather than silently falling
+        # back to cross-validation on a degenerate split.
+        return bench.copy(), None
+    mask = bench["basin_id"].astype(str).isin(set(held))
+    return bench[~mask].copy(), bench[mask].copy()
 
 
 def _dedup_by_subc(df: pd.DataFrame) -> pd.DataFrame:
@@ -272,6 +316,7 @@ def run_grid_b_factorial(
     checkpoint_every: int = 50,
     domain_map_path: str | Path = "data/variable_domain_mapping.csv",
     save_surfaces: bool = True,
+    use_reference_set: bool = True,
 ) -> Path:
     """Grid B execution: full benchmark N, asymmetric levels, Tier 2/3 metrics.
 
@@ -304,8 +349,29 @@ def run_grid_b_factorial(
         prepared = _prepare_entity_data(master_table, entity_name)
         panel_row = prepared["panel_row"]
         valid_axes = _axes_for_panel_row(panel_row, ("snapping", "lowacc"))
+
+        # T6: withhold the reference set once, before anything else. The
+        # accessible area stays derived from the FULL benchmark, so reference
+        # subcatchments are never available as pseudo-absences.
+        if use_reference_set:
+            train_bench, reference_set = split_reference_set(
+                prepared["benchmark"], entity_name, master_seed)
+            prepared["benchmark"] = train_bench
+            if reference_set is None:
+                print(f"[{entity_name}] NO reference set possible "
+                      f"({train_bench.basin_id.nunique()} basins); "
+                      f"cross-validated metrics only", flush=True)
+            else:
+                print(f"[{entity_name}] reference set: {len(reference_set)} withheld, "
+                      f"{len(train_bench)} for training", flush=True)
+        else:
+            reference_set = None
+
         benchmark_n = len(prepared["benchmark"])
         n_experiment = benchmark_n  # Grid B: full benchmark, no cap
+        fold_map_clean = assign_basin_folds(
+            prepared["benchmark"]["basin_id"], n_splits=n_splits,
+            looo_threshold=looo_threshold)
 
         print(
             f"[{entity_name}] Grid B: axes={valid_axes} benchmark_n={benchmark_n} "
@@ -344,6 +410,8 @@ def run_grid_b_factorial(
                         maxent_n_cpus=1,
                         n_experiment=n_experiment,
                         return_artifacts=True,
+                        reference_set=reference_set,
+                        fold_map=fold_map_clean,
                         domain_map=domain_map,
                     )
                 except Exception as e:
@@ -447,6 +515,8 @@ def run_grid_b_factorial(
                                     n_experiment=n_experiment,
                                     bg_seed=derive_seed(master_seed, entity_name,
                                                         algorithm, track, replicate),
+                                    reference_set=reference_set,
+                                    fold_map=fold_map_clean,
                                     benchmark_importance=bench_imp,
                                     benchmark_surface=bench_surf,
                                     domain_map=domain_map,
@@ -636,7 +706,7 @@ def run_null_model(
 def load_panel_and_master(
     data_path: str | None = None,
     entity: str | None = None,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
+) -> tuple[pd.DataFrame, pd.DataFrame | None]:
     panel = load_final_panel()
     if entity is not None:
         panel = panel.loc[panel["entity"] == entity].copy()

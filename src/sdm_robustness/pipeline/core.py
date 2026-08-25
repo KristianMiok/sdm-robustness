@@ -389,10 +389,11 @@ def fit_cv_cell(
             sc = sc[:, -1] if sc.ndim == 2 else sc
         else:
             sc = np.asarray(mdl.predict(x_ev), dtype=float)
-        fold_metrics.append(compute_performance_metrics(y_ev, sc, threshold=0.5))
-        unique_folds = []
+        ref_metrics = compute_performance_metrics(y_ev, sc, threshold=0.5)
+        ref_metrics["omission_rate"] = 1.0 - ref_metrics.get("sensitivity", float("nan"))
     else:
-        unique_folds = sorted(pd.Series(contaminated_pres["fold"]).dropna().unique().tolist())
+        ref_metrics = None
+    unique_folds = sorted(pd.Series(contaminated_pres["fold"]).dropna().unique().tolist())
 
     for fold in unique_folds:
         pres_train = contaminated_pres[contaminated_pres["fold"] != fold].copy()
@@ -468,6 +469,13 @@ def fit_cv_cell(
     for key in fold_metrics[0].keys():
         vals = [m[key] for m in fold_metrics]
         agg[key] = float(np.nanmean(vals))
+    agg["omission_rate"] = 1.0 - agg.get("sensitivity", float("nan"))
+
+    if ref_metrics is not None:
+        # T6: the reference-set metrics are the ones we report. The cross-validated
+        # figures are retained under cv_ so the two can be compared directly rather
+        # than across separate campaigns - the CV model is fitted anyway.
+        agg = {**{f"cv_{k}": v for k, v in agg.items()}, **ref_metrics}
 
     # === Tier 2/3 metrics (only computed if benchmark artifacts provided) ===
     tier23: dict[str, Any] = {}
