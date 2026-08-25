@@ -299,6 +299,7 @@ def fit_cv_cell(
     domain_map: dict[str, str] | None = None,
     fold_map: dict[str, int] | None = None,
     bg_seed: int | None = None,
+    reference_set: pd.DataFrame | None = None,
     return_artifacts: bool = False,
 ) -> dict[str, Any]:
     feat_cols = get_track_columns(benchmark, track)
@@ -358,7 +359,38 @@ def fit_cv_cell(
     contaminated_pres["fold"] = contaminated_pres["basin_id"].astype(str).map(pres_fold_map)
 
     fold_metrics: list[dict[str, float]] = []
-    unique_folds = sorted(pd.Series(contaminated_pres["fold"]).dropna().unique().tolist())
+
+    if reference_set is not None:
+        # T6: evaluate against a fixed, independent High-accuracy reference set
+        # that is withheld from every arm. No cross-validation: one model is fitted
+        # on the full contaminated set and scored on the reference presences plus a
+        # background draw disjoint from them.
+        ref = reference_set[["subc_id", "basin_id"] + kept].copy()
+        ref[kept] = ref[kept].fillna(medians)
+        ref_subc = set(ref["subc_id"].astype(str))
+        acc_eval = acc[~acc["subc_id"].astype(str).isin(ref_subc)]
+        n_neg_ref = min(len(ref), len(acc_eval)) if algorithm != "maxent" \
+            else min(maxent_background_n, len(acc_eval))
+        neg_ref = acc_eval.sample(n=n_neg_ref, replace=False,
+                                  random_state=bg_base + 977)
+        bg_n_tr = min(maxent_background_n, len(acc)) if algorithm == "maxent" \
+            else min(len(contaminated_pres), len(acc))
+        neg_tr = acc.sample(n=bg_n_tr, replace=False, random_state=bg_base)
+        x_tr = pd.concat([contaminated_pres[kept], neg_tr[kept]], axis=0)
+        y_tr = np.array([1] * len(contaminated_pres) + [0] * len(neg_tr))
+        mdl = build_model(algorithm, seed=seed, n_jobs=-1, maxent_n_cpus=maxent_n_cpus)
+        mdl.fit(x_tr, y_tr)
+        x_ev = pd.concat([ref[kept], neg_ref[kept]], axis=0)
+        y_ev = np.array([1] * len(ref) + [0] * len(neg_ref))
+        if hasattr(mdl, "predict_proba"):
+            sc = np.asarray(mdl.predict_proba(x_ev))
+            sc = sc[:, -1] if sc.ndim == 2 else sc
+        else:
+            sc = np.asarray(mdl.predict(x_ev), dtype=float)
+        fold_metrics.append(compute_performance_metrics(y_ev, sc, threshold=0.5))
+        unique_folds = []
+    else:
+        unique_folds = sorted(pd.Series(contaminated_pres["fold"]).dropna().unique().tolist())
 
     for fold in unique_folds:
         pres_train = contaminated_pres[contaminated_pres["fold"] != fold].copy()
@@ -461,6 +493,8 @@ def fit_cv_cell(
             "benchmark_presence_n": int(len(contaminated_pres)),
             "contrast_pool_n": int(len(acc)),
             "accessible_area_segment_count": int(len(acc)),
+            "reference_set_n": int(len(reference_set)) if reference_set is not None else 0,
+            "eval_mode": "reference_set" if reference_set is not None else "cv",
             **agg,
         }
 
