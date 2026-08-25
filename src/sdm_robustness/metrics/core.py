@@ -142,6 +142,31 @@ def warrens_i(
     return float(1.0 - 0.5 * np.sum((np.sqrt(p) - np.sqrt(q)) ** 2))
 
 
+def max_sss_threshold(
+    presence_scores: np.ndarray,
+    background_scores: np.ndarray,
+) -> float:
+    """Threshold maximising sensitivity + specificity (Liu et al. 2013)."""
+    p = np.asarray(presence_scores, dtype=float)
+    b = np.asarray(background_scores, dtype=float)
+    p, b = p[np.isfinite(p)], b[np.isfinite(b)]
+    if not len(p) or not len(b):
+        return 0.5
+    cand = np.unique(np.concatenate([p, b]))
+    if len(cand) > 2000:
+        cand = np.quantile(cand, np.linspace(0, 1, 2000))
+    sens = (p[None, :] >= cand[:, None]).mean(axis=1)
+    spec = (b[None, :] < cand[:, None]).mean(axis=1)
+    return float(cand[int(np.argmax(sens + spec))])
+
+
+def tenth_percentile_threshold(presence_scores: np.ndarray) -> float:
+    """10th-percentile training-presence threshold."""
+    p = np.asarray(presence_scores, dtype=float)
+    p = p[np.isfinite(p)]
+    return float(np.quantile(p, 0.10)) if len(p) else 0.5
+
+
 def range_area_change(
     benchmark_surface: np.ndarray,
     current_surface: np.ndarray,

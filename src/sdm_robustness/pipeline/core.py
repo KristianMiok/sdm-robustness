@@ -24,6 +24,8 @@ from sdm_robustness.metrics import (
     schoeners_d,
     warrens_i,
     range_area_change,
+    max_sss_threshold,
+    tenth_percentile_threshold,
     spatial_mismatch_summary,
     compute_domain_importance_shift,
     domain_rank_stability,
@@ -565,6 +567,37 @@ def fit_cv_cell(
             tier23["schoener_d"] = float("nan")
             tier23["warren_i"] = float("nan")
         try:
+            # T6.5 / T6.6: several thresholds plus a threshold-free comparison,
+            # computed inline so per-run surfaces need not be persisted.
+            # MaxSSS and the 10th-percentile cut come from THIS run's presences,
+            # as a practitioner would derive them; the _fix variants reuse the
+            # benchmark replicate's threshold, isolating the contamination effect.
+            try:
+                pres_scores = np.asarray(
+                    predict_suitability_surface(final_model, contaminated_pres[kept]),
+                    dtype=float)
+                thr_sss = max_sss_threshold(pres_scores, run_surface)
+                thr_p10 = tenth_percentile_threshold(pres_scores)
+                bs = np.asarray(benchmark_surface, dtype=float)
+                thr_sss_b = max_sss_threshold(pres_scores, bs)
+                tier23["threshold_max_sss"] = thr_sss
+                tier23["threshold_p10"] = thr_p10
+                for tag, thr in (("03", 0.3), ("07", 0.7),
+                                 ("maxsss", thr_sss), ("p10", thr_p10),
+                                 ("maxsss_fix", thr_sss_b)):
+                    tier23[f"range_area_pct_change_{tag}"] = range_area_change(
+                        benchmark_surface, run_surface, threshold=thr)
+                rs = np.asarray(run_surface, dtype=float)
+                mfin = np.isfinite(bs) & np.isfinite(rs)
+                tier23["suitability_mad"] = float(np.mean(np.abs(rs[mfin] - bs[mfin]))) if mfin.any() else float("nan")
+                tier23["suitability_mean_shift"] = float(np.mean(rs[mfin] - bs[mfin])) if mfin.any() else float("nan")
+            except Exception:
+                for tag in ("03", "07", "maxsss", "p10", "maxsss_fix"):
+                    tier23[f"range_area_pct_change_{tag}"] = float("nan")
+                for k in ("threshold_max_sss", "threshold_p10",
+                          "suitability_mad", "suitability_mean_shift"):
+                    tier23[k] = float("nan")
+
             tier23["range_area_pct_change_05"] = range_area_change(
                 benchmark_surface, run_surface, threshold=0.5
             )
