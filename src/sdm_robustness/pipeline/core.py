@@ -372,10 +372,12 @@ def fit_cv_cell(
         ref[kept] = ref[kept].fillna(medians)
         ref_subc = set(ref["subc_id"].astype(str))
         acc_eval = acc[~acc["subc_id"].astype(str).isin(ref_subc)]
-        n_neg_ref = min(len(ref), len(acc_eval)) if algorithm != "maxent" \
-            else min(maxent_background_n, len(acc_eval))
-        neg_ref = acc_eval.sample(n=n_neg_ref, replace=False,
-                                  random_state=bg_base + 977)
+        # Evaluate against the WHOLE accessible area rather than a 1:1 draw.
+        # The available background per reference presence varies eightfold across
+        # entities (29x to 230x), so any fixed ratio makes AUC incomparable
+        # between them; using everything removes both the arbitrary choice and
+        # the between-entity inconsistency, and costs only prediction time.
+        neg_ref = acc_eval
         bg_n_tr = min(maxent_background_n, len(acc)) if algorithm == "maxent" \
             else min(len(contaminated_pres), len(acc))
         neg_tr = acc.sample(n=bg_n_tr, replace=False, random_state=bg_base)
