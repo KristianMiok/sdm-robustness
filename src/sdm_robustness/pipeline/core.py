@@ -361,6 +361,7 @@ def fit_cv_cell(
     contaminated_pres["fold"] = contaminated_pres["basin_id"].astype(str).map(pres_fold_map)
 
     fold_metrics: list[dict[str, float]] = []
+    fold_sizes: list[int] = []
 
     if reference_set is not None:
         # T6: evaluate against a fixed, independent High-accuracy reference set
@@ -448,6 +449,7 @@ def fit_cv_cell(
 
         perf = compute_performance_metrics(y_test, y_score, threshold=0.5)
         fold_metrics.append(perf)
+        fold_sizes.append(len(y_test))
 
     if not fold_metrics:
         return {
@@ -465,10 +467,16 @@ def fit_cv_cell(
             "contrast_pool_n": int(len(acc)),
         }
 
+    # Folds are grouped by basin and basins are very unequal - for entities where
+    # one basin holds 40-72% of records the fold sizes differ tenfold - so an
+    # unweighted mean lets a fold with a tenth of the data carry equal weight.
+    fold_w = np.asarray(fold_sizes, dtype=float) if fold_sizes else np.ones(len(fold_metrics))
     agg: dict[str, float] = {}
     for key in fold_metrics[0].keys():
-        vals = [m[key] for m in fold_metrics]
-        agg[key] = float(np.nanmean(vals))
+        vals = np.asarray([m[key] for m in fold_metrics], dtype=float)
+        ok = np.isfinite(vals)
+        agg[key] = float(np.average(vals[ok], weights=fold_w[ok])) if ok.any() else float("nan")
+        agg[f"{key}_unweighted"] = float(np.nanmean(vals))
     agg["omission_rate"] = 1.0 - agg.get("sensitivity", float("nan"))
 
     if ref_metrics is not None:
