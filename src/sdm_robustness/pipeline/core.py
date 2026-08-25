@@ -641,6 +641,8 @@ def fit_cv_cell(
         "benchmark_presence_n": int(len(contaminated_pres)),
         "contrast_pool_n": int(len(acc)),
         "accessible_area_segment_count": int(len(acc)),
+        "reference_set_n": int(len(reference_set)) if reference_set is not None else 0,
+        "eval_mode": "reference_set" if reference_set is not None else "cv",
         **agg,
         **tier23,
     }
