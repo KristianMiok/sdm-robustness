@@ -107,6 +107,12 @@ def parse_args() -> argparse.Namespace:
         help="Grid B only: skip saving suitability surface parquets (faster, smaller output)",
     )
     parser.add_argument(
+        "--no-reference-set",
+        action="store_true",
+        help="Grid B only: skip the withheld reference set and report "
+             "cross-validated metrics only (T6 default is to withhold)",
+    )
+    parser.add_argument(
         "--master-seed",
         type=int,
         default=20260426,
@@ -176,6 +182,7 @@ def main() -> int:
             lowacc_levels_pct=lowacc_levels,
             n_replicates=args.n_replicates_default,
             save_surfaces=not args.no_surfaces,
+            use_reference_set=not args.no_reference_set,
         )
         print(f"Wrote: {results_path}")
         return 0
