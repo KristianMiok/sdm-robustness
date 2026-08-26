@@ -2,7 +2,7 @@
 #SBATCH --job-name=refcvx
 #SBATCH --partition=cpu
 #SBATCH --cpus-per-task=8
-#SBATCH --mem-per-cpu=3000M
+#SBATCH --mem-per-cpu=1800M
 #SBATCH --time=08:00:00
 #SBATCH --array=0-2
 #SBATCH --output=logs/refcvx_%A_%a.out

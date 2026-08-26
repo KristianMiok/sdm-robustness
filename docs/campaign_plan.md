@@ -76,3 +76,15 @@ T2.1 and T3 both need the subc_id to predictor lookup for every subcatchment in
 the extent, not only the occupied ones. Until it exists, the displacement
 neutrality result is provisional: it was measured over subcatchments that
 contain crayfish records, and the real network has headwater segments with none.
+
+## SLURM settings
+
+Use `--cpus-per-task=8 --mem-per-cpu=1800M`. At 3000M the scheduler silently
+redirects to `largemem`, which has a longer queue and, during the August 2026
+maintenance, 84 of ~190 nodes drained against 38 idle on `cpu`. The ceiling on
+`cpu` is somewhere between 14.4 and 24 GB per task. Memory was never the
+constraint: the largest entity is 48,267 segments x 211 predictors, about 82 MB.
+
+Maxent branches need `--time=24:00:00` - at 220-340 s per fit an 8 h limit is
+hit around replicate 11 of 15. Write results incrementally rather than at the
+end; the variance pilot lost two array tasks that way.
