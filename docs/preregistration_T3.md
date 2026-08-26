@@ -82,6 +82,13 @@ percent change at threshold 0.5:
 | P. leptodactylus (pooled) | 13.59 | 15.38 |
 | P. clarkii (native) | 4.71 | 4.05 |
 
+Added 24 August 2026, before T3: the mechanism holds on all three algorithms
+independently - Spearman -0.829 (Maxent, n=6), -0.857 (random forest, n=8),
+-0.952 (XGBoost, n=8) - and the algorithms agree with each other on the entity
+ranking (pairwise Spearman 0.77-0.94), so per-entity effect is one quantity
+rather than three. This does not change P1-P4; it is recorded because it
+strengthens the mechanism being tested and was established before any T3 run.
+
 Sources: `results/revision/t5_pilot_summary.csv`,
 `results/revision/t3_effective_dose.csv`,
 `results/revision/t3_effective_dose_substitution.csv`,
