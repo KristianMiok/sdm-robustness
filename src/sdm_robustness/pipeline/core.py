@@ -555,8 +555,20 @@ def fit_cv_cell(
         try:
             bench_pres_x = benchmark[kept].fillna(medians).values
             cont_pres_x = contaminated_pres[kept].values
-            tier23["niche_centroid_disp"] = centroid_displacement(bench_pres_x, cont_pres_x)
-            tier23["niche_breadth_change"] = niche_breadth_change(bench_pres_x, cont_pres_x)
+            # T8.2/T8.3: standardised PCA, one space fitted on both samples,
+            # renamed - the niche does not change, the sampled space does.
+            from sdm_robustness.metrics.tier2_ecological import (
+                fit_environmental_pca, sample_centroid_displacement,
+                sample_dispersion_change)
+            _bdf = pd.DataFrame(bench_pres_x, columns=kept)
+            _cdf = pd.DataFrame(cont_pres_x, columns=kept)
+            _pca = fit_environmental_pca(_bdf, _cdf, n_components=2)
+            tier23["env_centroid_disp"] = sample_centroid_displacement(
+                _bdf, _cdf, fitted_pca=_pca)
+            tier23["env_dispersion_change"] = sample_dispersion_change(
+                _bdf, _cdf, fitted_pca=_pca)
+            tier23["niche_centroid_disp"] = tier23["env_centroid_disp"]
+            tier23["niche_breadth_change"] = tier23["env_dispersion_change"]
         except Exception:
             tier23["niche_centroid_disp"] = float("nan")
             tier23["niche_breadth_change"] = float("nan")

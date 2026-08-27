@@ -316,7 +316,7 @@ def run_grid_b_factorial(
     checkpoint_every: int = 50,
     domain_map_path: str | Path = "data/variable_domain_mapping.csv",
     save_surfaces: bool = True,
-    use_reference_set: bool = True,
+    use_reference_set: bool = False,   # T6: off by default - see docs/campaign_plan.md
 ) -> Path:
     """Grid B execution: full benchmark N, asymmetric levels, Tier 2/3 metrics.
 
@@ -357,6 +357,15 @@ def run_grid_b_factorial(
             train_bench, reference_set = split_reference_set(
                 prepared["benchmark"], entity_name, master_seed)
             prepared["benchmark"] = train_bench
+            if reference_set is not None:
+                # The reference basins must leave the contamination pools too,
+                # or contamination reinjects reference-basin records into
+                # training and the held-out set stops being held out.
+                _rb = set(reference_set["basin_id"].astype(str))
+                for _k in ("snap_pool", "lowacc_pool"):
+                    _p = prepared[_k]
+                    if len(_p):
+                        prepared[_k] = _p[~_p["basin_id"].astype(str).isin(_rb)].copy()
             if reference_set is None:
                 print(f"[{entity_name}] NO reference set possible "
                       f"({train_bench.basin_id.nunique()} basins); "

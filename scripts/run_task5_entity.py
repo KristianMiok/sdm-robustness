@@ -107,10 +107,10 @@ def parse_args() -> argparse.Namespace:
         help="Grid B only: skip saving suitability surface parquets (faster, smaller output)",
     )
     parser.add_argument(
-        "--no-reference-set",
+        "--reference-set",
         action="store_true",
-        help="Grid B only: skip the withheld reference set and report "
-             "cross-validated metrics only (T6 default is to withhold)",
+        help="Grid B only: withhold an independent reference set. Off by "
+             "default; the 2x2 design answers MC7 without it",
     )
     parser.add_argument(
         "--master-seed",
@@ -155,7 +155,7 @@ def main() -> int:
         # should run only snapping level 1, not the full Grid B.
         requested_axes = tuple(args.axes) if args.axes else ("snapping", "lowacc")
 
-        if args.levels:
+        if args.levels and not (args.snap_levels or args.lowacc_levels):
             # Manual override for smoke tests / sub-jobs.
             snap_levels = tuple(args.levels) if "snapping" in requested_axes else tuple()
             lowacc_levels = tuple(args.levels) if "lowacc" in requested_axes else tuple()
@@ -182,7 +182,7 @@ def main() -> int:
             lowacc_levels_pct=lowacc_levels,
             n_replicates=args.n_replicates_default,
             save_surfaces=not args.no_surfaces,
-            use_reference_set=not args.no_reference_set,
+            use_reference_set=args.reference_set,
         )
         print(f"Wrote: {results_path}")
         return 0
