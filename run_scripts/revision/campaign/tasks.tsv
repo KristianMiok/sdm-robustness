@@ -1,0 +1,76 @@
+Astacus astacus	Astacus_astacus	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20	0 3 10 20	30
+Astacus astacus	Astacus_astacus	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Astacus astacus	Astacus_astacus	mx_local_only_low	maxent	local_only		0 3 10 20	10
+Astacus astacus	Astacus_astacus	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Astacus astacus	Astacus_astacus	mx_upstream_only_low	maxent	upstream_only		0 3 10 20	10
+Astacus astacus	Astacus_astacus	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Astacus astacus	Astacus_astacus	mx_combined_low	maxent	combined		0 3 10 20	10
+Pontastacus leptodactylus (pooled)	Pontastacus_leptodactylus_pooled	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20	0 3 10 20	30
+Pontastacus leptodactylus (pooled)	Pontastacus_leptodactylus_pooled	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Pontastacus leptodactylus (pooled)	Pontastacus_leptodactylus_pooled	mx_local_only_low	maxent	local_only		0 3 10 20	10
+Pontastacus leptodactylus (pooled)	Pontastacus_leptodactylus_pooled	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Pontastacus leptodactylus (pooled)	Pontastacus_leptodactylus_pooled	mx_upstream_only_low	maxent	upstream_only		0 3 10 20	10
+Pontastacus leptodactylus (pooled)	Pontastacus_leptodactylus_pooled	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Pontastacus leptodactylus (pooled)	Pontastacus_leptodactylus_pooled	mx_combined_low	maxent	combined		0 3 10 20	10
+Austropotamobius torrentium (pooled)	Austropotamobius_torrentium_pooled	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20	0 3 10 20	30
+Austropotamobius torrentium (pooled)	Austropotamobius_torrentium_pooled	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Austropotamobius torrentium (pooled)	Austropotamobius_torrentium_pooled	mx_local_only_low	maxent	local_only		0 3 10 20	10
+Austropotamobius torrentium (pooled)	Austropotamobius_torrentium_pooled	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Austropotamobius torrentium (pooled)	Austropotamobius_torrentium_pooled	mx_upstream_only_low	maxent	upstream_only		0 3 10 20	10
+Austropotamobius torrentium (pooled)	Austropotamobius_torrentium_pooled	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Austropotamobius torrentium (pooled)	Austropotamobius_torrentium_pooled	mx_combined_low	maxent	combined		0 3 10 20	10
+Austropotamobius fulcisianus (pooled)	Austropotamobius_fulcisianus_pooled	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20	0 3 10 20	30
+Austropotamobius fulcisianus (pooled)	Austropotamobius_fulcisianus_pooled	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Austropotamobius fulcisianus (pooled)	Austropotamobius_fulcisianus_pooled	mx_local_only_low	maxent	local_only		0 3 10 20	10
+Austropotamobius fulcisianus (pooled)	Austropotamobius_fulcisianus_pooled	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Austropotamobius fulcisianus (pooled)	Austropotamobius_fulcisianus_pooled	mx_upstream_only_low	maxent	upstream_only		0 3 10 20	10
+Austropotamobius fulcisianus (pooled)	Austropotamobius_fulcisianus_pooled	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Austropotamobius fulcisianus (pooled)	Austropotamobius_fulcisianus_pooled	mx_combined_low	maxent	combined		0 3 10 20	10
+Procambarus clarkii (native)	Procambarus_clarkii_native	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20	0 3 10 20	30
+Procambarus clarkii (native)	Procambarus_clarkii_native	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Procambarus clarkii (native)	Procambarus_clarkii_native	mx_local_only_low	maxent	local_only		0 3 10 20	10
+Procambarus clarkii (native)	Procambarus_clarkii_native	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Procambarus clarkii (native)	Procambarus_clarkii_native	mx_upstream_only_low	maxent	upstream_only		0 3 10 20	10
+Procambarus clarkii (native)	Procambarus_clarkii_native	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Procambarus clarkii (native)	Procambarus_clarkii_native	mx_combined_low	maxent	combined		0 3 10 20	10
+Procambarus clarkii (alien)	Procambarus_clarkii_alien	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20	0 3 10 20	30
+Procambarus clarkii (alien)	Procambarus_clarkii_alien	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Procambarus clarkii (alien)	Procambarus_clarkii_alien	mx_local_only_low	maxent	local_only		0 3 10 20	10
+Procambarus clarkii (alien)	Procambarus_clarkii_alien	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Procambarus clarkii (alien)	Procambarus_clarkii_alien	mx_upstream_only_low	maxent	upstream_only		0 3 10 20	10
+Procambarus clarkii (alien)	Procambarus_clarkii_alien	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Procambarus clarkii (alien)	Procambarus_clarkii_alien	mx_combined_low	maxent	combined		0 3 10 20	10
+Pacifastacus leniusculus (alien)	Pacifastacus_leniusculus_alien	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20	0 3 10 20	30
+Pacifastacus leniusculus (alien)	Pacifastacus_leniusculus_alien	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Pacifastacus leniusculus (alien)	Pacifastacus_leniusculus_alien	mx_local_only_low	maxent	local_only		0 3 10 20	10
+Pacifastacus leniusculus (alien)	Pacifastacus_leniusculus_alien	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Pacifastacus leniusculus (alien)	Pacifastacus_leniusculus_alien	mx_upstream_only_low	maxent	upstream_only		0 3 10 20	10
+Pacifastacus leniusculus (alien)	Pacifastacus_leniusculus_alien	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Pacifastacus leniusculus (alien)	Pacifastacus_leniusculus_alien	mx_combined_low	maxent	combined		0 3 10 20	10
+Faxonius limosus (alien)	Faxonius_limosus_alien	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20	0 3 10 20	30
+Faxonius limosus (alien)	Faxonius_limosus_alien	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Faxonius limosus (alien)	Faxonius_limosus_alien	mx_local_only_low	maxent	local_only		0 3 10 20	10
+Faxonius limosus (alien)	Faxonius_limosus_alien	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Faxonius limosus (alien)	Faxonius_limosus_alien	mx_upstream_only_low	maxent	upstream_only		0 3 10 20	10
+Faxonius limosus (alien)	Faxonius_limosus_alien	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Faxonius limosus (alien)	Faxonius_limosus_alien	mx_combined_low	maxent	combined		0 3 10 20	10
+Lacunicambarus diogenes	Lacunicambarus_diogenes	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20		30
+Lacunicambarus diogenes	Lacunicambarus_diogenes	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Lacunicambarus diogenes	Lacunicambarus_diogenes	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Lacunicambarus diogenes	Lacunicambarus_diogenes	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Cambarus latimanus	Cambarus_latimanus	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20		30
+Cambarus latimanus	Cambarus_latimanus	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Cambarus latimanus	Cambarus_latimanus	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Cambarus latimanus	Cambarus_latimanus	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Cambarus striatus	Cambarus_striatus	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20		30
+Cambarus striatus	Cambarus_striatus	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Cambarus striatus	Cambarus_striatus	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Cambarus striatus	Cambarus_striatus	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Creaserinus fodiens	Creaserinus_fodiens	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20		30
+Creaserinus fodiens	Creaserinus_fodiens	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Creaserinus fodiens	Creaserinus_fodiens	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Creaserinus fodiens	Creaserinus_fodiens	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
+Faxonius limosus (native)	Faxonius_limosus_native	rfxgb	random_forest xgboost	local_only upstream_only combined	0 1 2 5 10 20		30
+Faxonius limosus (native)	Faxonius_limosus_native	mx_local_only_snap	maxent	local_only	0 1 2 5 10 20		10
+Faxonius limosus (native)	Faxonius_limosus_native	mx_upstream_only_snap	maxent	upstream_only	0 1 2 5 10 20		10
+Faxonius limosus (native)	Faxonius_limosus_native	mx_combined_snap	maxent	combined	0 1 2 5 10 20		10
