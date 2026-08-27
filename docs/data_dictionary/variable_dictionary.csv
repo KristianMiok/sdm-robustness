@@ -1,0 +1,399 @@
+variable,kind,source_name,sheet,unit,definition
+l_CLI1,local,bio1_min,CLIMATE,°C,Annual mean air temperature [minimum]
+l_CLI2,local,bio1_max,CLIMATE,°C,Annual mean air temperature [maximum]
+l_CLI3,local,bio1_mean,CLIMATE,°C,Annual mean air temperature [mean]
+u_CLI3,upstream,bio1_mean,CLIMATE,°C,Annual mean air temperature [mean]
+l_CLI4,local,bio1_sd,CLIMATE,°C,Annual mean air temperature [sd]
+l_CLI5,local,bio2_min,CLIMATE,°C,Mean diurnal range (mean of monthly (max temp – min temp)) [minimum]
+l_CLI6,local,bio2_max,CLIMATE,°C,Mean diurnal range (mean of monthly (max temp – min temp)) [maximum]
+l_CLI7,local,bio2_mean,CLIMATE,°C,Mean diurnal range (mean of monthly (max temp – min temp)) [mean]
+u_CLI7,upstream,bio2_mean,CLIMATE,°C,Mean diurnal range (mean of monthly (max temp – min temp)) [mean]
+l_CLI8,local,bio2_sd,CLIMATE,°C,Mean diurnal range (mean of monthly (max temp – min temp)) [sd]
+l_CLI9,local,bio3_min,CLIMATE,°C,Isothermality (bio2 / bio7) (× 100) [minimum]
+l_CLI10,local,bio3_max,CLIMATE,°C,Isothermality (bio2 / bio7) (× 100) [maximum]
+l_CLI11,local,bio3_mean,CLIMATE,°C,Isothermality (bio2 / bio7) (× 100) [mean]
+u_CLI11,upstream,bio3_mean,CLIMATE,°C,Isothermality (bio2 / bio7) (× 100) [mean]
+l_CLI12,local,bio3_sd,CLIMATE,°C,Isothermality (bio2 / bio7) (× 100) [sd]
+l_CLI13,local,bio4_min,CLIMATE,°C/100,Temperature seasonality (standard deviation × 100) [minimum]
+l_CLI14,local,bio4_max,CLIMATE,°C/100,Temperature seasonality (standard deviation × 100) [maximum]
+l_CLI15,local,bio4_mean,CLIMATE,°C/100,Temperature seasonality (standard deviation × 100) [mean]
+u_CLI15,upstream,bio4_mean,CLIMATE,°C/100,Temperature seasonality (standard deviation × 100) [mean]
+l_CLI16,local,bio4_sd,CLIMATE,°C/100,Temperature seasonality (standard deviation × 100) [sd]
+l_CLI17,local,bio5_min,CLIMATE,°C,Max temperature of warmest month [minimum]
+l_CLI18,local,bio5_max,CLIMATE,°C,Max temperature of warmest month [maximum]
+l_CLI19,local,bio5_mean,CLIMATE,°C,Max temperature of warmest month [mean]
+u_CLI19,upstream,bio5_mean,CLIMATE,°C,Max temperature of warmest month [mean]
+l_CLI20,local,bio5_sd,CLIMATE,°C,Max temperature of warmest month [sd]
+l_CLI21,local,bio6_min,CLIMATE,°C,Min temperature of coldest month [minimum]
+l_CLI22,local,bio6_max,CLIMATE,°C,Min temperature of coldest month [maximum]
+l_CLI23,local,bio6_mean,CLIMATE,°C,Min temperature of coldest month [mean]
+u_CLI23,upstream,bio6_mean,CLIMATE,°C,Min temperature of coldest month [mean]
+l_CLI24,local,bio6_sd,CLIMATE,°C,Min temperature of coldest month [sd]
+l_CLI25,local,bio7_min,CLIMATE,°C,Temperature annual range (bio5 – bio6) [minimum]
+l_CLI26,local,bio7_max,CLIMATE,°C,Temperature annual range (bio5 – bio6) [maximum]
+l_CLI27,local,bio7_mean,CLIMATE,°C,Temperature annual range (bio5 – bio6) [mean]
+u_CLI27,upstream,bio7_mean,CLIMATE,°C,Temperature annual range (bio5 – bio6) [mean]
+l_CLI28,local,bio7_sd,CLIMATE,°C,Temperature annual range (bio5 – bio6) [sd]
+l_CLI29,local,bio8_min,CLIMATE,°C,Mean temperature of wettest quarter [minimum]
+l_CLI30,local,bio8_max,CLIMATE,°C,Mean temperature of wettest quarter [maximum]
+l_CLI31,local,bio8_mean,CLIMATE,°C,Mean temperature of wettest quarter [mean]
+u_CLI31,upstream,bio8_mean,CLIMATE,°C,Mean temperature of wettest quarter [mean]
+l_CLI32,local,bio8_sd,CLIMATE,°C,Mean temperature of wettest quarter [sd]
+l_CLI33,local,bio9_min,CLIMATE,°C,Mean temperature of driest quarter [minimum]
+l_CLI34,local,bio9_max,CLIMATE,°C,Mean temperature of driest quarter [maximum]
+l_CLI35,local,bio9_mean,CLIMATE,°C,Mean temperature of driest quarter [mean]
+u_CLI35,upstream,bio9_mean,CLIMATE,°C,Mean temperature of driest quarter [mean]
+l_CLI36,local,bio9_sd,CLIMATE,°C,Mean temperature of driest quarter [sd]
+l_CLI37,local,bio10_min,CLIMATE,°C,Mean temperature of warmest quarter [minimum]
+l_CLI38,local,bio10_mean,CLIMATE,°C,Mean temperature of warmest quarter [maximum]
+l_CLI39,local,bio10_max,CLIMATE,°C,Mean temperature of warmest quarter [mean]
+u_CLI39,upstream,bio10_max,CLIMATE,°C,Mean temperature of warmest quarter [mean]
+l_CLI40,local,bio10_sd,CLIMATE,°C,Mean temperature of warmest quarter [sd]
+l_CLI41,local,bio11_min,CLIMATE,°C,Mean temperature of coldest quarter [minimum]
+l_CLI42,local,bio11_max,CLIMATE,°C,Mean temperature of coldest quarter [maximum]
+l_CLI43,local,bio11_mean,CLIMATE,°C,Mean temperature of coldest quarter [mean]
+u_CLI43,upstream,bio11_mean,CLIMATE,°C,Mean temperature of coldest quarter [mean]
+l_CLI44,local,bio11_sd,CLIMATE,°C,Mean temperature of coldest quarter [sd]
+l_CLI45,local,bio12_min,CLIMATE,kg/m²,Annual precipitation [minimum]
+l_CLI46,local,bio12_max,CLIMATE,kg/m²,Annual precipitation [maximum]
+l_CLI47,local,bio12_mean,CLIMATE,kg/m²,Annual precipitation [mean]
+u_CLI47,upstream,bio12_mean,CLIMATE,kg/m²,Annual precipitation [mean]
+l_CLI48,local,bio12_sd,CLIMATE,kg/m²,Annual precipitation [sd]
+l_CLI49,local,bio13_min,CLIMATE,kg/m²,Precipitation of wettest month [minimum]
+l_CLI50,local,bio13_max,CLIMATE,kg/m²,Precipitation of wettest month [maximum]
+l_CLI51,local,bio13_mean,CLIMATE,kg/m²,Precipitation of wettest month [mean]
+u_CLI51,upstream,bio13_mean,CLIMATE,kg/m²,Precipitation of wettest month [mean]
+l_CLI52,local,bio13_sd,CLIMATE,kg/m²,Precipitation of wettest month [sd]
+l_CLI53,local,bio14_min,CLIMATE,kg/m²,Precipitation of driest month [minimum]
+l_CLI54,local,bio14_max,CLIMATE,kg/m²,Precipitation of driest month [maximum]
+l_CLI55,local,bio14_mean,CLIMATE,kg/m²,Precipitation of driest month [mean]
+u_CLI55,upstream,bio14_mean,CLIMATE,kg/m²,Precipitation of driest month [mean]
+l_CLI56,local,bio14_sd,CLIMATE,kg/m²,Precipitation of driest month [sd]
+l_CLI57,local,bio15_min,CLIMATE,kg/m²,Precipitation seasonality (coefficient of variation) [minimum]
+l_CLI58,local,bio15_max,CLIMATE,kg/m²,Precipitation seasonality (coefficient of variation) [maximum]
+l_CLI59,local,bio15_mean,CLIMATE,kg/m²,Precipitation seasonality (coefficient of variation) [mean]
+u_CLI59,upstream,bio15_mean,CLIMATE,kg/m²,Precipitation seasonality (coefficient of variation) [mean]
+l_CLI60,local,bio15_sd,CLIMATE,kg/m²,Precipitation seasonality (coefficient of variation) [sd]
+l_CLI61,local,bio16_min,CLIMATE,kg/m²,Precipitation of wettest quarter [minimum]
+l_CLI62,local,bio16_max,CLIMATE,kg/m²,Precipitation of wettest quarter [maximum]
+l_CLI63,local,bio16_mean,CLIMATE,kg/m²,Precipitation of wettest quarter [mean]
+u_CLI63,upstream,bio16_mean,CLIMATE,kg/m²,Precipitation of wettest quarter [mean]
+l_CLI64,local,bio16_sd,CLIMATE,kg/m²,Precipitation of wettest quarter [sd]
+l_CLI65,local,bio17_min,CLIMATE,kg/m²,Precipitation of driest quarter [minimum]
+l_CLI66,local,bio17_max,CLIMATE,kg/m²,Precipitation of driest quarter [maximum]
+l_CLI67,local,bio17_mean,CLIMATE,kg/m²,Precipitation of driest quarter [mean]
+u_CLI67,upstream,bio17_mean,CLIMATE,kg/m²,Precipitation of driest quarter [mean]
+l_CLI68,local,bio17_sd,CLIMATE,kg/m²,Precipitation of driest quarter [sd]
+l_CLI69,local,bio18_min,CLIMATE,kg/m²,Precipitation of warmest quarter [minimum]
+l_CLI70,local,bio18_max,CLIMATE,kg/m²,Precipitation of warmest quarter [maximum]
+l_CLI71,local,bio18_mean,CLIMATE,kg/m²,Precipitation of warmest quarter [mean]
+u_CLI71,upstream,bio18_mean,CLIMATE,kg/m²,Precipitation of warmest quarter [mean]
+l_CLI72,local,bio18_sd,CLIMATE,kg/m²,Precipitation of warmest quarter [sd]
+l_CLI73,local,bio19_min,CLIMATE,kg/m²,Precipitation of coldest quarter [minimum]
+l_CLI74,local,bio19_max,CLIMATE,kg/m²,Precipitation of coldest quarter [maximum]
+l_CLI75,local,bio19_mean,CLIMATE,kg/m²,Precipitation of coldest quarter [mean]
+u_CLI75,upstream,bio19_mean,CLIMATE,kg/m²,Precipitation of coldest quarter [mean]
+l_CLI76,local,bio19_sd,CLIMATE,kg/m²,Precipitation of coldest quarter [sd]
+l_SOL1,local,awcts_min,SOIL,v%,Derived saturated water content (volumetric fraction) [minimum]
+l_SOL2,local,awcts_max,SOIL,v%,Derived saturated water content (volumetric fraction) [maximum]
+l_SOL3,local,awcts_mean,SOIL,v%,Derived saturated water content (volumetric fraction) [mean]
+u_SOL3,upstream,awcts_mean,SOIL,v%,Derived saturated water content (volumetric fraction) [mean]
+l_SOL4,local,awcts_sd,SOIL,v%,Derived saturated water content (volumetric fraction) [sd]
+l_SOL5,local,wwp_min,SOIL,v%,Available water capacity (volumetric fraction) [minimum]
+l_SOL6,local,wwp_max,SOIL,v%,Available water capacity (volumetric fraction) [maximum]
+l_SOL7,local,wwp_mean,SOIL,v%,Available water capacity (volumetric fraction) [mean]
+u_SOL7,upstream,wwp_mean,SOIL,v%,Available water capacity (volumetric fraction) [mean]
+l_SOL8,local,wwp_sd,SOIL,v%,Available water capacity (volumetric fraction) [sd]
+l_SOL9,local,clyppt_min,SOIL,w%,Clay fraction by weight (<0.0002 mm) [minimum]
+l_SOL10,local,clyppt_max,SOIL,w%,Clay fraction by weight (<0.0002 mm) [maximum]
+l_SOL11,local,clyppt_mean,SOIL,w%,Clay fraction by weight (<0.0002 mm) [mean]
+u_SOL11,upstream,clyppt_mean,SOIL,w%,Clay fraction by weight (<0.0002 mm) [mean]
+l_SOL12,local,clyppt_sd,SOIL,w%,Clay fraction by weight (<0.0002 mm) [sd]
+l_SOL13,local,sndppt_min,SOIL,w%,Sand fraction by weight (0.05–2 mm) [minimum]
+l_SOL14,local,sndppt_max,SOIL,w%,Sand fraction by weight (0.05–2 mm) [maximum]
+l_SOL15,local,sndppt_mean,SOIL,w%,Sand fraction by weight (0.05–2 mm) [mean]
+u_SOL15,upstream,sndppt_mean,SOIL,w%,Sand fraction by weight (0.05–2 mm) [mean]
+l_SOL16,local,sndppt_sd,SOIL,w%,Sand fraction by weight (0.05–2 mm) [sd]
+l_SOL17,local,sltppt_min,SOIL,w%,Silt fraction by weight (0.0002–0.05 mm) [minimum]
+l_SOL18,local,sltppt_max,SOIL,w%,Silt fraction by weight (0.0002–0.05 mm) [maximum]
+l_SOL19,local,sltppt_mean,SOIL,w%,Silt fraction by weight (0.0002–0.05 mm) [mean]
+u_SOL19,upstream,sltppt_mean,SOIL,w%,Silt fraction by weight (0.0002–0.05 mm) [mean]
+l_SOL20,local,sltppt_sd,SOIL,w%,Silt fraction by weight (0.0002–0.05 mm) [sd]
+l_SOL21,local,crfvol_min,SOIL,v%,Coarse fragments by volume (>2 mm) [minimum]
+l_SOL22,local,crfvol_max,SOIL,v%,Coarse fragments by volume (>2 mm) [maximum]
+l_SOL23,local,crfvol_mean,SOIL,v%,Coarse fragments by volume (>2 mm) [mean]
+u_SOL23,upstream,crfvol_mean,SOIL,v%,Coarse fragments by volume (>2 mm) [mean]
+l_SOL24,local,crfvol_sd,SOIL,v%,Coarse fragments by volume (>2 mm) [sd]
+l_SOL25,local,bldfie_min,SOIL,kg/m³,Bulk density of the fine earth fraction (< 2 mm) [minimum]
+l_SOL26,local,bldfie_max,SOIL,kg/m³,Bulk density of the fine earth fraction (< 2 mm) [maximum]
+l_SOL27,local,bldfie_mean,SOIL,kg/m³,Bulk density of the fine earth fraction (< 2 mm) [mean]
+u_SOL27,upstream,bldfie_mean,SOIL,kg/m³,Bulk density of the fine earth fraction (< 2 mm) [mean]
+l_SOL28,local,bldfie_sd,SOIL,kg/m³,Bulk density of the fine earth fraction (< 2 mm) [sd]
+l_SOL29,local,cecsol_min,SOIL,cmolc/kg,Cation exchange capacity of the fine earth fraction  (< 2 mm) [minimum]
+l_SOL30,local,cecsol_max,SOIL,cmolc/kg,Cation exchange capacity of the fine earth fraction  (< 2 mm) [maximum]
+l_SOL31,local,cecsol_mean,SOIL,cmolc/kg,Cation exchange capacity of the fine earth fraction  (< 2 mm) [mean]
+u_SOL31,upstream,cecsol_mean,SOIL,cmolc/kg,Cation exchange capacity of the fine earth fraction  (< 2 mm) [mean]
+l_SOL32,local,cecsol_sd,SOIL,cmolc/kg,Cation exchange capacity of the fine earth fraction  (< 2 mm) [sd]
+l_SOL33,local,histpr_min,SOIL,%,"Cumulative probability of Histosols (soils with high organic matter) occurrence (WRB, USDA) [minimum]"
+l_SOL34,local,histpr_max,SOIL,%,"Cumulative probability of Histosols (soils with high organic matter) occurrence (WRB, USDA) [maximum]"
+l_SOL35,local,histpr_mean,SOIL,%,"Cumulative probability of Histosols (soils with high organic matter) occurrence (WRB, USDA) [mean]"
+u_SOL35,upstream,histpr_mean,SOIL,%,"Cumulative probability of Histosols (soils with high organic matter) occurrence (WRB, USDA) [mean]"
+l_SOL36,local,histpr_sd,SOIL,%,"Cumulative probability of Histosols (soils with high organic matter) occurrence (WRB, USDA)"
+l_SOL37,local,orcdrc_min,SOIL,g/kg,Soil organic carbon content in ‰ [minimum]
+l_SOL38,local,orcdrc_max,SOIL,g/kg,Soil organic carbon content in ‰ [maximum]
+l_SOL39,local,orcdrc_mean,SOIL,g/kg,Soil organic carbon content in ‰ [mean]
+u_SOL39,upstream,orcdrc_mean,SOIL,g/kg,Soil organic carbon content in ‰ [mean]
+l_SOL40,local,orcdrc_sd,SOIL,g/kg,Soil organic carbon content in ‰ [sd]
+l_SOL41,local,phihox_min,SOIL,pH,"Soil pH in H2O and KCl solution, multiplied by 10 (pH in H2O x 10) [minimum]"
+l_SOL42,local,phihox_max,SOIL,pH,"Soil pH in H2O and KCl solution, multiplied by 10 (pH in H2O x 10) [maximum]"
+l_SOL43,local,phihox_mean,SOIL,pH,"Soil pH in H2O and KCl solution, multiplied by 10 (pH in H2O x 10) [mean]"
+u_SOL43,upstream,phihox_mean,SOIL,pH,"Soil pH in H2O and KCl solution, multiplied by 10 (pH in H2O x 10) [mean]"
+l_SOL44,local,phihox_sd,SOIL,pH,"Soil pH in H2O and KCl solution, multiplied by 10 (pH in H2O x 10) [sd]"
+l_SOL45,local,acdwrb_min,SOIL,pH,Soil acidity (WRB class-based) [minimum]
+l_SOL46,local,acdwrb_max,SOIL,pH,Soil acidity (WRB class-based) [maximum]
+l_SOL47,local,acdwrb_mean,SOIL,pH,Soil acidity (WRB class-based) [mean]
+u_SOL47,upstream,acdwrb_mean,SOIL,pH,Soil acidity (WRB class-based) [mean]
+l_SOL48,local,acdwrb_sd,SOIL,pH,Soil acidity (WRB class-based) [sd]
+l_SOL49,local,slgwrb_min,SOIL,pH,Soil sodicity (WRB class-based) [minimum]
+l_SOL50,local,slgwrb_max,SOIL,pH,Soil sodicity (WRB class-based) [maximum]
+l_SOL51,local,slgwrb_mean,SOIL,pH,Soil sodicity (WRB class-based) [mean]
+u_SOL51,upstream,slgwrb_mean,SOIL,pH,Soil sodicity (WRB class-based) [mean]
+l_SOL52,local,slgwrb_sd,SOIL,pH,Soil sodicity (WRB class-based) [sd]
+l_SOL53,local,bdricm_min,SOIL,cm,Depth to R horizon [minimum]
+l_SOL54,local,bdricm_max,SOIL,cm,Depth to R horizon [maximum]
+l_SOL55,local,bdricm_mean,SOIL,cm,Depth to R horizon [mean]
+u_SOL55,upstream,bdricm_mean,SOIL,cm,Depth to R horizon [mean]
+l_SOL56,local,bdricm_sd,SOIL,cm,Depth to R horizon [sd]
+l_SOL57,local,bdrlog_min,SOIL,%,Probability of occurrence of R horizon [minimum]
+l_SOL58,local,bdrlog_max,SOIL,%,Probability of occurrence of R horizon [maximum]
+l_SOL59,local,bdrlog_mean,SOIL,%,Probability of occurrence of R horizon [mean]
+u_SOL59,upstream,bdrlog_mean,SOIL,%,Probability of occurrence of R horizon [mean]
+l_SOL60,local,bdrlog_sd,SOIL,%,Probability of occurrence of R horizon [sd]
+l_LAC1,local,c10,LAND COVER,%,"Cropland, rainfed (codes 10, 11, 12)"
+u_LAC1,upstream,c10,LAND COVER,%,"Cropland, rainfed (codes 10, 11, 12)"
+l_LAC2,local,c20,LAND COVER,%,"Cropland, irrigated / post-flooding (20)"
+u_LAC2,upstream,c20,LAND COVER,%,"Cropland, irrigated / post-flooding (20)"
+l_LAC3,local,c30,LAND COVER,%,Mosaic cropland (>50%) / natural vegetation (<50%) (30)
+u_LAC3,upstream,c30,LAND COVER,%,Mosaic cropland (>50%) / natural vegetation (<50%) (30)
+l_LAC4,local,c40,LAND COVER,%,Mosaic natural vegetation (>50%) / cropland (<50%) (40)
+u_LAC4,upstream,c40,LAND COVER,%,Mosaic natural vegetation (>50%) / cropland (<50%) (40)
+l_LAC5,local,c50,LAND COVER,%,"Tree cover, broadleaved, evergreen (closed to open >15%) (50)"
+u_LAC5,upstream,c50,LAND COVER,%,"Tree cover, broadleaved, evergreen (closed to open >15%) (50)"
+l_LAC6,local,c60,LAND COVER,%,"Tree cover, broadleaved, deciduous (closed to open >15%) (60, 61, 62)"
+u_LAC6,upstream,c60,LAND COVER,%,"Tree cover, broadleaved, deciduous (closed to open >15%) (60, 61, 62)"
+l_LAC7,local,c70,LAND COVER,%,"Tree cover, needleleaved, evergreen (closed to open >15%) (70, 71, 72)"
+u_LAC7,upstream,c70,LAND COVER,%,"Tree cover, needleleaved, evergreen (closed to open >15%) (70, 71, 72)"
+l_LAC8,local,c80,LAND COVER,%,"Tree cover, needleleaved, deciduous (>15%) (80, 81, 82)"
+u_LAC8,upstream,c80,LAND COVER,%,"Tree cover, needleleaved, deciduous (>15%) (80, 81, 82)"
+l_LAC9,local,c90,LAND COVER,%,"Tree cover, mixed leaf type (broad + needle) (90)"
+u_LAC9,upstream,c90,LAND COVER,%,"Tree cover, mixed leaf type (broad + needle) (90)"
+l_LAC10,local,c100,LAND COVER,%,Mosaic tree & shrub (>50%) / herbaceous (<50%) (100)
+u_LAC10,upstream,c100,LAND COVER,%,Mosaic tree & shrub (>50%) / herbaceous (<50%) (100)
+l_LAC11,local,c110,LAND COVER,%,Mosaic herbaceous (>50%) / tree & shrub (<50%) (110)
+u_LAC11,upstream,c110,LAND COVER,%,Mosaic herbaceous (>50%) / tree & shrub (<50%) (110)
+l_LAC12,local,c120,LAND COVER,%,"Shrubland (120, 121, 122) "
+u_LAC12,upstream,c120,LAND COVER,%,"Shrubland (120, 121, 122) "
+l_LAC13,local,c130,LAND COVER,%,Grassland (130)
+u_LAC13,upstream,c130,LAND COVER,%,Grassland (130)
+l_LAC14,local,c140,LAND COVER,%,"Lichens, mosses (140)"
+u_LAC14,upstream,c140,LAND COVER,%,"Lichens, mosses (140)"
+l_LAC15,local,c150,LAND COVER,%,"Sparse vegetation (tree, shrub, herbaceous <15%) (150, 151, 152, 153)"
+u_LAC15,upstream,c150,LAND COVER,%,"Sparse vegetation (tree, shrub, herbaceous <15%) (150, 151, 152, 153)"
+l_LAC16,local,c160,LAND COVER,%,"Tree cover flooded, fresh/brackish water (160)"
+u_LAC16,upstream,c160,LAND COVER,%,"Tree cover flooded, fresh/brackish water (160)"
+l_LAC17,local,c170,LAND COVER,%,"Tree cover flooded, saline water (170)"
+u_LAC17,upstream,c170,LAND COVER,%,"Tree cover flooded, saline water (170)"
+l_LAC18,local,c180,LAND COVER,%,Shrub or herbaceous flooded (fresh/saline/brackish water) (180)
+u_LAC18,upstream,c180,LAND COVER,%,Shrub or herbaceous flooded (fresh/saline/brackish water) (180)
+l_LAC19,local,c190,LAND COVER,%,Urban areas (190)
+u_LAC19,upstream,c190,LAND COVER,%,Urban areas (190)
+l_LAC20,local,c200,LAND COVER,%,"Bare areas (200, 201, 202)"
+u_LAC20,upstream,c200,LAND COVER,%,"Bare areas (200, 201, 202)"
+l_LAC21,local,c210,LAND COVER,%,Water bodies (210)
+u_LAC21,upstream,c210,LAND COVER,%,Water bodies (210)
+l_LAC22,local,c220,LAND COVER,%,Snow and ice (permanent) (220)
+u_LAC22,upstream,c220,LAND COVER,%,Snow and ice (permanent) (220)
+l_TOP1,local,slope_curv_max_dw_cel_min,TOPOGRAPHY,m⁻¹,"Cell maximum curvature (between highest upstream cell, focal cell, and downstream cell) [minimum]"
+l_TOP2,local,slope_curv_max_dw_cel_max,TOPOGRAPHY,m⁻¹,"Cell maximum curvature (between highest upstream cell, focal cell, and downstream cell) [maximum]"
+l_TOP3,local,slope_curv_max_dw_cel_mean,TOPOGRAPHY,m⁻¹,"Cell maximum curvature (between highest upstream cell, focal cell, and downstream cell) [mean]"
+u_TOP3,upstream,slope_curv_max_dw_cel_mean,TOPOGRAPHY,m⁻¹,"Cell maximum curvature (between highest upstream cell, focal cell, and downstream cell) [mean]"
+l_TOP4,local,slope_curv_max_dw_cel_sd,TOPOGRAPHY,m⁻¹,"Cell maximum curvature (between highest upstream cell, focal cell, and downstream cell) [sd]"
+l_TOP5,local,slope_curv_min_dw_cel_min,TOPOGRAPHY,m⁻¹,"Cell minimum curvature (between lowest upstream cell, focal cell, and downstream cell) [minimum]"
+l_TOP6,local,slope_curv_min_dw_cel_max,TOPOGRAPHY,m⁻¹,"Cell minimum curvature (between lowest upstream cell, focal cell, and downstream cell) [maximum]"
+l_TOP7,local,slope_curv_min_dw_cel_mean,TOPOGRAPHY,m⁻¹,"Cell minimum curvature (between lowest upstream cell, focal cell, and downstream cell) [mean]"
+u_TOP7,upstream,slope_curv_min_dw_cel_mean,TOPOGRAPHY,m⁻¹,"Cell minimum curvature (between lowest upstream cell, focal cell, and downstream cell) [mean]"
+l_TOP8,local,slope_curv_min_dw_cel_sd,TOPOGRAPHY,m⁻¹,"Cell minimum curvature (between lowest upstream cell, focal cell, and downstream cell) [sd]"
+l_TOP9,local,slope_elv_dw_cel_min,TOPOGRAPHY,m,Cell elevation difference (between focal cell and downstream cell) [minimum]
+l_TOP10,local,slope_elv_dw_cel_max,TOPOGRAPHY,m,Cell elevation difference (between focal cell and downstream cell) [maximum]
+l_TOP11,local,slope_elv_dw_cel_mean,TOPOGRAPHY,m,Cell elevation difference (between focal cell and downstream cell) [mean]
+u_TOP11,upstream,slope_elv_dw_cel_mean,TOPOGRAPHY,m,Cell elevation difference (between focal cell and downstream cell) [mean]
+l_TOP12,local,slope_elv_dw_cel_sd,TOPOGRAPHY,m,Cell elevation difference (between focal cell and downstream cell) [sd]
+l_TOP13,local,slope_grad_dw_cel_min,TOPOGRAPHY,–,Cell gradient [minimum]
+l_TOP14,local,slope_grad_dw_cel_max,TOPOGRAPHY,–,Cell gradient [maximum]
+l_TOP15,local,slope_grad_dw_cel_mean,TOPOGRAPHY,–,Cell gradient [mean]
+u_TOP15,upstream,slope_grad_dw_cel_mean,TOPOGRAPHY,–,Cell gradient [mean]
+l_TOP16,local,slope_grad_dw_cel_sd,TOPOGRAPHY,–,Cell gradient [sd]
+l_TOP17,local,stream_dist_up_near_min,TOPOGRAPHY,m,Shortest upstream distance (between focal grid cell and the nearest sub-catchment drainage divide) [minimum]
+l_TOP18,local,stream_dist_up_near_max,TOPOGRAPHY,m,Shortest upstream distance (between focal grid cell and the nearest sub-catchment drainage divide) [maximum]
+l_TOP19,local,stream_dist_up_near_mean,TOPOGRAPHY,m,Shortest upstream distance (between focal grid cell and the nearest sub-catchment drainage divide) [mean]
+u_TOP19,upstream,stream_dist_up_near_mean,TOPOGRAPHY,m,Shortest upstream distance (between focal grid cell and the nearest sub-catchment drainage divide) [mean]
+l_TOP20,local,stream_dist_up_near_sd,TOPOGRAPHY,m,Shortest upstream distance (between focal grid cell and the nearest sub-catchment drainage divide) [sd]
+l_TOP21,local,stream_dist_up_farth_min,TOPOGRAPHY,m,Longest upstream distance (between focal grid cell and the furthest sub-catchment drainage divide) [minimum]
+l_TOP22,local,stream_dist_up_farth_max,TOPOGRAPHY,m,Longest upstream distance (between focal grid cell and the furthest sub-catchment drainage divide) [maximum]
+l_TOP23,local,stream_dist_up_farth_mean,TOPOGRAPHY,m,Longest upstream distance (between focal grid cell and the furthest sub-catchment drainage divide) [mean]
+u_TOP23,upstream,stream_dist_up_farth_mean,TOPOGRAPHY,m,Longest upstream distance (between focal grid cell and the furthest sub-catchment drainage divide) [mean]
+l_TOP24,local,stream_dist_up_farth_sd,TOPOGRAPHY,m,Longest upstream distance (between focal grid cell and the furthest sub-catchment drainage divide) [sd]
+l_TOP25,local,stream_dist_dw_near_min,TOPOGRAPHY,m,Distance between focal grid cell and its nearest downstream stream grid cell [minimum]
+l_TOP26,local,stream_dist_dw_near_max,TOPOGRAPHY,m,Distance between focal grid cell and its nearest downstream stream grid cell [maximum]
+l_TOP27,local,stream_dist_dw_near_mean,TOPOGRAPHY,m,Distance between focal grid cell and its nearest downstream stream grid cell [mean]
+u_TOP27,upstream,stream_dist_dw_near_mean,TOPOGRAPHY,m,Distance between focal grid cell and its nearest downstream stream grid cell [mean]
+l_TOP28,local,stream_dist_dw_near_sd,TOPOGRAPHY,m,Distance between focal grid cell and its nearest downstream stream grid cell [sd]
+l_TOP29,local,outlet_dist_dw_basin_min,TOPOGRAPHY,m,Distance between focal grid cell and the outlet grid cell in the network [minimum]
+l_TOP30,local,outlet_dist_dw_basin_max,TOPOGRAPHY,m,Distance between focal grid cell and the outlet grid cell in the network [maximum]
+l_TOP31,local,outlet_dist_dw_basin_mean ,TOPOGRAPHY,m,Distance between focal grid cell and the outlet grid cell in the network [mean]
+u_TOP31,upstream,outlet_dist_dw_basin_mean ,TOPOGRAPHY,m,Distance between focal grid cell and the outlet grid cell in the network [mean]
+l_TOP32,local,outlet_dist_dw_basin_sd,TOPOGRAPHY,m,Distance between focal grid cell and the outlet grid cell in the network [sd]
+l_TOP33,local,outlet_dist_dw_scatch_min,TOPOGRAPHY,m,Distance between focal grid cell and the downstream stream node grid cell [minimum]
+l_TOP34,local,outlet_dist_dw_scatch_max,TOPOGRAPHY,m,Distance between focal grid cell and the downstream stream node grid cell [maximum]
+l_TOP35,local,outlet_dist_dw_scatch_mean ,TOPOGRAPHY,m,Distance between focal grid cell and the downstream stream node grid cell [mean]
+u_TOP35,upstream,outlet_dist_dw_scatch_mean ,TOPOGRAPHY,m,Distance between focal grid cell and the downstream stream node grid cell [mean]
+l_TOP36,local,outlet_dist_dw_scatch_sd,TOPOGRAPHY,m,Distance between focal grid cell and the downstream stream node grid cell [sd]
+l_TOP37,local,stream_dist_proximity_min,TOPOGRAPHY,m,Euclidean distance between focal grid cell and the stream network [minimum]
+l_TOP38,local,stream_dist_proximity_max,TOPOGRAPHY,m,Euclidean distance between focal grid cell and the stream network [maximum]
+l_TOP39,local,stream_dist_proximity_mean,TOPOGRAPHY,m,Euclidean distance between focal grid cell and the stream network [mean]
+u_TOP39,upstream,stream_dist_proximity_mean,TOPOGRAPHY,m,Euclidean distance between focal grid cell and the stream network [mean]
+l_TOP40,local,stream_dist_proximity_sd,TOPOGRAPHY,m,Euclidean distance between focal grid cell and the stream network [sd]
+l_TOP41,local,stream_diff_up_near_min,TOPOGRAPHY,m,Elevation difference of the shortest path from focal grid cell to the sub-catchment drainage divide [minimum]
+l_TOP42,local,stream_diff_up_near_max,TOPOGRAPHY,m,Elevation difference of the shortest path from focal grid cell to the sub-catchment drainage divide [maximum]
+l_TOP43,local,stream_diff_up_near_mean,TOPOGRAPHY,m,Elevation difference of the shortest path from focal grid cell to the sub-catchment drainage divide [mean]
+u_TOP43,upstream,stream_diff_up_near_mean,TOPOGRAPHY,m,Elevation difference of the shortest path from focal grid cell to the sub-catchment drainage divide [mean]
+l_TOP44,local,stream_diff_up_near_sd,TOPOGRAPHY,m,Elevation difference of the shortest path from focal grid cell to the sub-catchment drainage divide [sd]
+l_TOP45,local,stream_diff_up_farth_min,TOPOGRAPHY,m,Elevation difference of the longest path from focal grid cell to the sub-catchment drainage divide [minimum]
+l_TOP46,local,stream_diff_up_farth_max,TOPOGRAPHY,m,Elevation difference of the longest path from focal grid cell to the sub-catchment drainage divide [maximum]
+l_TOP47,local,stream_diff_up_farth_mean,TOPOGRAPHY,m,Elevation difference of the longest path from focal grid cell to the sub-catchment drainage divide [mean]
+u_TOP47,upstream,stream_diff_up_farth_mean,TOPOGRAPHY,m,Elevation difference of the longest path from focal grid cell to the sub-catchment drainage divide [mean]
+l_TOP48,local,stream_diff_up_farth_sd,TOPOGRAPHY,m,Elevation difference of the longest path from focal grid cell to the sub-catchment drainage divide [sd]
+l_TOP49,local,stream_diff_dw_near_min,TOPOGRAPHY,m,Elevation difference between focal grid cell and its nearest downstream stream pixel [minimum]
+l_TOP50,local,stream_diff_dw_near_max,TOPOGRAPHY,m,Elevation difference between focal grid cell and its nearest downstream stream pixel [maximum]
+l_TOP51,local,stream_diff_dw_near_mean,TOPOGRAPHY,m,Elevation difference between focal grid cell and its nearest downstream stream pixel [mean]
+u_TOP51,upstream,stream_diff_dw_near_mean,TOPOGRAPHY,m,Elevation difference between focal grid cell and its nearest downstream stream pixel [mean]
+l_TOP52,local,stream_diff_dw_near_sd,TOPOGRAPHY,m,Elevation difference between focal grid cell and its nearest downstream stream pixel [sd]
+l_TOP53,local,outlet_diff_dw_basin_min,TOPOGRAPHY,m,Elevation difference between focal grid cell and the outlet grid cell in the network [minimum]
+l_TOP54,local,outlet_diff_dw_basin_max,TOPOGRAPHY,m,Elevation difference between focal grid cell and the outlet grid cell in the network [maximum]
+l_TOP55,local,outlet_diff_dw_basin_mean,TOPOGRAPHY,m,Elevation difference between focal grid cell and the outlet grid cell in the network [mean]
+u_TOP55,upstream,outlet_diff_dw_basin_mean,TOPOGRAPHY,m,Elevation difference between focal grid cell and the outlet grid cell in the network [mean]
+l_TOP56,local,outlet_diff_dw_basin_sd,TOPOGRAPHY,m,Elevation difference between focal grid cell and the outlet grid cell in the network [sd]
+l_TOP57,local,outlet_diff_dw_scatch_min,TOPOGRAPHY,m,Elevation difference between focal  grid cell and the downstream stream node grid cell [minimum]
+l_TOP58,local,outlet_diff_dw_scatch_max,TOPOGRAPHY,m,Elevation difference between focal  grid cell and the downstream stream node grid cell [maximum]
+l_TOP59,local,outlet_diff_dw_scatch_mean,TOPOGRAPHY,m,Elevation difference between focal  grid cell and the downstream stream node grid cell [mean]
+u_TOP59,upstream,outlet_diff_dw_scatch_mean,TOPOGRAPHY,m,Elevation difference between focal  grid cell and the downstream stream node grid cell [mean]
+l_TOP60,local,outlet_diff_dw_scatch_sd,TOPOGRAPHY,m,Elevation difference between focal  grid cell and the downstream stream node grid cell [sd]
+l_TOP61,local,channel_grad_dw_seg_min,TOPOGRAPHY,–,Segment downstream mean gradient (between focal cell and the node or outlet) [minimum]
+l_TOP62,local,channel_grad_dw_seg_max,TOPOGRAPHY,–,Segment downstream mean gradient (between focal cell and the node or outlet) [maximum]
+l_TOP63,local,channel_grad_dw_seg_mean,TOPOGRAPHY,–,Segment downstream mean gradient (between focal cell and the node or outlet) [mean]
+u_TOP63,upstream,channel_grad_dw_seg_mean,TOPOGRAPHY,–,Segment downstream mean gradient (between focal cell and the node or outlet) [mean]
+l_TOP64,local,channel_grad_dw_seg_sd,TOPOGRAPHY,–,Segment downstream mean gradient (between focal cell and the node or outlet) [sd]
+l_TOP65,local,channel_grad_up_seg_min,TOPOGRAPHY,–,Segment upstream mean gradient (between focal cell and the init or node) [minimum]
+l_TOP66,local,channel_grad_up_seg_max,TOPOGRAPHY,–,Segment upstream mean gradient (between focal cell and the init or node) [maximum]
+l_TOP67,local,channel_grad_up_seg_mean,TOPOGRAPHY,–,Segment upstream mean gradient (between focal cell and the init or node) [mean]
+u_TOP67,upstream,channel_grad_up_seg_mean,TOPOGRAPHY,–,Segment upstream mean gradient (between focal cell and the init or node) [mean]
+l_TOP68,local,channel_grad_up_seg_sd,TOPOGRAPHY,–,Segment upstream mean gradient (between focal cell and the init or node) [sd]
+l_TOP69,local,channel_grad_up_cel_min,TOPOGRAPHY,–,Cell upstream gradient between focal cell and the next cell [minimum]
+l_TOP70,local,channel_grad_up_cel_max,TOPOGRAPHY,–,Cell upstream gradient between focal cell and the next cell [maximum]
+l_TOP71,local,channel_grad_up_cel_mean,TOPOGRAPHY,–,Cell upstream gradient between focal cell and the next cell [mean]
+u_TOP71,upstream,channel_grad_up_cel_mean,TOPOGRAPHY,–,Cell upstream gradient between focal cell and the next cell [mean]
+l_TOP72,local,channel_grad_up_cel_sd,TOPOGRAPHY,–,Cell upstream gradient between focal cell and the next cell [sd]
+l_TOP73,local,channel_curv_cel_min,TOPOGRAPHY,–,Cell stream course curvature of the focal cell [minimum]
+l_TOP74,local,channel_curv_cel_max,TOPOGRAPHY,–,Cell stream course curvature of the focal cell [maximum]
+l_TOP75,local,channel_curv_cel_mean,TOPOGRAPHY,–,Cell stream course curvature of the focal cell [mean]
+u_TOP75,upstream,channel_curv_cel_mean,TOPOGRAPHY,–,Cell stream course curvature of the focal cell [mean]
+l_TOP76,local,channel_curv_cel_sd,TOPOGRAPHY,–,Cell stream course curvature of the focal cell [sd]
+l_TOP77,local,channel_elv_dw_seg_min,TOPOGRAPHY,–,Segment downstream elevation difference [minimum]
+l_TOP78,local,channel_elv_dw_seg_max,TOPOGRAPHY,–,Segment downstream elevation difference [maximum]
+l_TOP79,local,channel_elv_dw_seg_mean,TOPOGRAPHY,–,Segment downstream elevation difference [mean]
+u_TOP79,upstream,channel_elv_dw_seg_mean,TOPOGRAPHY,–,Segment downstream elevation difference [mean]
+l_TOP80,local,channel_elv_dw_seg_sd,TOPOGRAPHY,–,Segment downstream elevation difference [sd]
+l_TOP81,local,channel_elv_up_seg_min,TOPOGRAPHY,–,Segment upstream elevation difference (between focal cell and the init or node) [minimum]
+l_TOP82,local,channel_elv_up_seg_max,TOPOGRAPHY,–,Segment upstream elevation difference (between focal cell and the init or node) [maximum]
+l_TOP83,local,channel_elv_up_seg_mean,TOPOGRAPHY,–,Segment upstream elevation difference (between focal cell and the init or node) [mean]
+u_TOP83,upstream,channel_elv_up_seg_mean,TOPOGRAPHY,–,Segment upstream elevation difference (between focal cell and the init or node) [mean]
+l_TOP84,local,channel_elv_up_seg_sd,TOPOGRAPHY,–,Segment upstream elevation difference (between focal cell and the init or node) [sd]
+l_TOP85,local,channel_elv_up_cel_min,TOPOGRAPHY,–,Cell upstream elevation difference (between focal cell and the next cell) [minimum]
+l_TOP86,local,channel_elv_up_cel_max,TOPOGRAPHY,–,Cell upstream elevation difference (between focal cell and the next cell) [maximum]
+l_TOP87,local,channel_elv_up_cel_mean,TOPOGRAPHY,–,Cell upstream elevation difference (between focal cell and the next cell) [mean]
+u_TOP87,upstream,channel_elv_up_cel_mean,TOPOGRAPHY,–,Cell upstream elevation difference (between focal cell and the next cell) [mean]
+l_TOP88,local,channel_elv_up_cel_sd,TOPOGRAPHY,–,Cell upstream elevation difference (between focal cell and the next cell) [sd]
+l_TOP89,local,channel_elv_dw_cel_min,TOPOGRAPHY,–,Cell downstream elevation difference (between focal cell and the next cell) [minimum]
+l_TOP90,local,channel_elv_dw_cel_max,TOPOGRAPHY,–,Cell downstream elevation difference (between focal cell and the next cell) [maximum]
+l_TOP91,local,channel_elv_dw_cel_mean,TOPOGRAPHY,–,Cell downstream elevation difference (between focal cell and the next cell) [mean]
+u_TOP91,upstream,channel_elv_dw_cel_mean,TOPOGRAPHY,–,Cell downstream elevation difference (between focal cell and the next cell) [mean]
+l_TOP92,local,channel_elv_dw_cel_sd,TOPOGRAPHY,–,Cell downstream elevation difference (between focal cell and the next cell) [sd]
+l_TOP93,local,channel_dist_dw_seg_min,TOPOGRAPHY,–,Segment downstream distance (between focal cell and the node or outlet) [minimum]
+l_TOP94,local,channel_dist_dw_seg_max,TOPOGRAPHY,–,Segment downstream distance (between focal cell and the node or outlet) [maximum]
+l_TOP95,local,channel_dist_dw_seg_mean,TOPOGRAPHY,–,Segment downstream distance (between focal cell and the node or outlet) [mean]
+u_TOP95,upstream,channel_dist_dw_seg_mean,TOPOGRAPHY,–,Segment downstream distance (between focal cell and the node or outlet) [mean]
+l_TOP96,local,channel_dist_dw_seg_sd,TOPOGRAPHY,–,Segment downstream distance (between focal cell and the node or outlet) [sd]
+l_TOP97,local,channel_dist_up_seg_min,TOPOGRAPHY,–,Segment upstream distance (between focal cell and the init or node) [minimum]
+l_TOP98,local,channel_dist_up_seg_max,TOPOGRAPHY,–,Segment upstream distance (between focal cell and the init or node) [maximum]
+l_TOP99,local,channel_dist_up_seg_mean,TOPOGRAPHY,–,Segment upstream distance (between focal cell and the init or node) [mean]
+u_TOP99,upstream,channel_dist_up_seg_mean,TOPOGRAPHY,–,Segment upstream distance (between focal cell and the init or node) [mean]
+l_TOP100,local,channel_dist_up_seg_sd,TOPOGRAPHY,–,Segment upstream distance (between focal cell and the init or node) [sd]
+l_TOP101,local,channel_dist_up_cel_min,TOPOGRAPHY,–,Cell upstream distance (between focal cell and next cell) [minimum]
+l_TOP102,local,channel_dist_up_cel_max,TOPOGRAPHY,–,Cell upstream distance (between focal cell and next cell) [maximum]
+l_TOP103,local,channel_dist_up_cel_mean,TOPOGRAPHY,–,Cell upstream distance (between focal cell and next cell) [mean]
+u_TOP103,upstream,channel_dist_up_cel_mean,TOPOGRAPHY,–,Cell upstream distance (between focal cell and next cell) [mean]
+l_TOP104,local,channel_dist_up_cel_sd,TOPOGRAPHY,–,Cell upstream distance (between focal cell and next cell) [sd]
+l_TOP105,local,strahler,TOPOGRAPHY,–,Strahler’s stream order
+u_TOP105,upstream,strahler,TOPOGRAPHY,–,Strahler’s stream order
+l_TOP106,local,horton,TOPOGRAPHY,–,Horton’s stream order
+l_TOP107,local,hack,TOPOGRAPHY,–,Hack’s stream order
+l_TOP108,local,shreve,TOPOGRAPHY,–,Shreve’s stream magnitude
+l_TOP109,local,topo_dim,TOPOGRAPHY,–,Topological dimension of streams
+l_TOP110,local,length,TOPOGRAPHY,m,Length of the stream reach
+u_TOP110,upstream,length,TOPOGRAPHY,m,Length of the stream reach
+l_TOP111,local,stright,TOPOGRAPHY,m,Length of the stream as straight line
+u_TOP111,upstream,stright,TOPOGRAPHY,m,Length of the stream as straight line
+l_TOP112,local,sinusoid,TOPOGRAPHY,m,Sinusoid of the stream reach (fractal dimension: stream length/straight stream length)
+u_TOP112,upstream,sinusoid,TOPOGRAPHY,m,Sinusoid of the stream reach (fractal dimension: stream length/straight stream length)
+l_TOP113,local,cum_length,TOPOGRAPHY,m,Accumulated length of stream from source
+l_TOP114,local,out_dist,TOPOGRAPHY,m,Distance to outlet (distance of current stream init from outlet)
+u_TOP114,upstream,out_dist,TOPOGRAPHY,m,Distance to outlet (distance of current stream init from outlet)
+l_TOP115,local,source_elev,TOPOGRAPHY,m,Source elevation (elevation of stream init)
+l_TOP116,local,outlet_elev,TOPOGRAPHY,m,Outlet elevation (elevation of stream outlet)
+l_TOP117,local,elev_drop,TOPOGRAPHY,m,Difference between source elevation and outlet elevation + outlet drop
+u_TOP117,upstream,elev_drop,TOPOGRAPHY,m,Difference between source elevation and outlet elevation + outlet drop
+l_TOP118,local,out_drop,TOPOGRAPHY,m,Outlet drop (drop at the outlet of the stream)
+l_TOP119,local,gradient,TOPOGRAPHY,m,Mean gradient of the sub-catchment (downstream elevation difference divided by distance)
+u_TOP119,upstream,gradient,TOPOGRAPHY,m,Mean gradient of the sub-catchment (downstream elevation difference divided by distance)
+l_TOP120,local,elev_min,TOPOGRAPHY,m,Elevation of the sub-catchment [minimum]
+l_TOP121,local,elev_max,TOPOGRAPHY,m,Elevation of the sub-catchment [maximum]
+l_TOP122,local,elev_mean,TOPOGRAPHY,m,Elevation of the sub-catchment [mean]
+u_TOP122,upstream,elev_mean,TOPOGRAPHY,m,Elevation of the sub-catchment [mean]
+l_TOP123,local,elev_sd,TOPOGRAPHY,m,Elevation of the sub-catchment [sd]
+l_TOP124,local,flow_ltm_min,TOPOGRAPHY,m³/s,"Long-term mean annual flow (FLO1K, 1980-2010) [minimum]"
+l_TOP125,local,flow_ltm_max,TOPOGRAPHY,m³/s,"Long-term mean annual flow (FLO1K, 1980-2010) [maximum]"
+l_TOP126,local,flow_ltm_mean,TOPOGRAPHY,m³/s,"Long-term mean annual flow (FLO1K, 1980-2010) [mean]"
+u_TOP126,upstream,flow_ltm_mean,TOPOGRAPHY,m³/s,"Long-term mean annual flow (FLO1K, 1980-2010) [mean]"
+l_TOP127,local,flow_ltm_sd,TOPOGRAPHY,m³/s,"Long-term mean annual flow (FLO1K, 1980-2010) [sd]"
+l_TOP128,local,flow_ltsd_min,TOPOGRAPHY,m³/s,"Long-term standart deviation annual flow (FLO1K, 1980-2010) [minimum]"
+l_TOP129,local,flow_ltsd_max,TOPOGRAPHY,m³/s,"Long-term standart deviation annual flow (FLO1K, 1980-2010) [maximum]"
+l_TOP130,local,flow_ltsd_mean,TOPOGRAPHY,m³/s,"Long-term standart deviation annual flow (FLO1K, 1980-2010) [mean]"
+u_TOP130,upstream,flow_ltsd_mean,TOPOGRAPHY,m³/s,"Long-term standart deviation annual flow (FLO1K, 1980-2010) [mean]"
+l_TOP131,local,flow_ltsd_sd,TOPOGRAPHY,m³/s,"Long-term standart deviation annual flow (FLO1K, 1980-2010) [sd]"
+l_TOP132,local,flow_accum,TOPOGRAPHY,km²,Accumulated number of cells that drain through each cell
+u_TOP132,upstream,flow_accum,TOPOGRAPHY,km²,Accumulated number of cells that drain through each cell
+l_TOP133,local,spi_min,TOPOGRAPHY,–,"Stream power index – a measure of the erosive power of flowing water (Moore et al., 1991) [minimum]"
+l_TOP134,local,spi_max,TOPOGRAPHY,–,"Stream power index – a measure of the erosive power of flowing water (Moore et al., 1991) [maximum]"
+l_TOP135,local,spi_mean,TOPOGRAPHY,–,"Stream power index – a measure of the erosive power of flowing water (Moore et al., 1991) [mean]"
+u_TOP135,upstream,spi_mean,TOPOGRAPHY,–,"Stream power index – a measure of the erosive power of flowing water (Moore et al., 1991) [mean]"
+l_TOP136,local,spi_sd,TOPOGRAPHY,–,"Stream power index – a measure of the erosive power of flowing water (Moore et al., 1991) [sd]"
+l_TOP137,local,sti_min,TOPOGRAPHY,–,"Sediment transportation index – a metric for describing the erosion and deposition of sediments (Mojaddadi et al., 2017) [minimum]"
+l_TOP138,local,sti_max,TOPOGRAPHY,–,"Sediment transportation index – a metric for describing the erosion and deposition of sediments (Mojaddadi et al., 2017) [maximum]"
+l_TOP139,local,sti_mean,TOPOGRAPHY,–,"Sediment transportation index – a metric for describing the erosion and deposition of sediments (Mojaddadi et al., 2017) [mean]"
+u_TOP139,upstream,sti_mean,TOPOGRAPHY,–,"Sediment transportation index – a metric for describing the erosion and deposition of sediments (Mojaddadi et al., 2017) [mean]"
+l_TOP140,local,sti_sd,TOPOGRAPHY,–,"Sediment transportation index – a metric for describing the erosion and deposition of sediments (Mojaddadi et al., 2017)"
+l_TOP141,local,cti_min,TOPOGRAPHY,–,"Compound topographic index – a steady state wetness index, also known as topographic wetness index (TWI) (Beven & Kirkby, 1979) [minimum]"
+l_TOP142,local,cti_max,TOPOGRAPHY,–,"Compound topographic index – a steady state wetness index, also known as topographic wetness index (TWI) (Beven & Kirkby, 1979) [maximum]"
+l_TOP143,local,cti_mean,TOPOGRAPHY,–,"Compound topographic index – a steady state wetness index, also known as topographic wetness index (TWI) (Beven & Kirkby, 1979) [mean]"
+u_TOP143,upstream,cti_mean,TOPOGRAPHY,–,"Compound topographic index – a steady state wetness index, also known as topographic wetness index (TWI) (Beven & Kirkby, 1979) [mean]"
+l_TOP144,local,cti_sd,TOPOGRAPHY,–,"Compound topographic index – a steady state wetness index, also known as topographic wetness index (TWI) (Beven & Kirkby, 1979) [sd]"
