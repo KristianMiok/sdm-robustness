@@ -1,0 +1,6 @@
+gate,dropped,remaining
+gate_1_min_benchmark,412,44
+gate_2_snap_pool,22,22
+gate_3_lowacc_pool,15,7
+gate_4_basin_spread,0,7
+gate_5_strahler_spread,0,7
