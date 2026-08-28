@@ -207,9 +207,40 @@ def contaminate_presence_set(
     contamination_pool: pd.DataFrame,
     level_pct: float,
     seed: int,
+    stratify_by: str | None = None,
 ) -> pd.DataFrame:
+    """Substitute `level_pct` of the benchmark with pool records.
+
+    T1.5: with `stratify_by="strahler"`, each substituted record is drawn from
+    the same stream order as the record it replaces, so the treatment changes
+    locational accuracy without also changing network position. Where the pool
+    cannot supply a stratum, the shortfall is left unsubstituted rather than
+    filled from another order - the achieved dose is then below nominal and
+    that is itself informative.
+    """
     if level_pct == 0:
         return benchmark.copy()
+
+    if stratify_by is not None:
+        n_total = len(benchmark)
+        n_replace = int(round(n_total * level_pct / 100.0))
+        rng = np.random.default_rng(seed)
+        bstr = benchmark[stratify_by]
+        quota = (bstr.value_counts() / n_total * n_replace).round().astype(int)
+        drop_idx, take_idx = [], []
+        for lvl, q in quota.items():
+            if q <= 0:
+                continue
+            pool_l = contamination_pool.index[contamination_pool[stratify_by] == lvl]
+            bench_l = benchmark.index[bstr == lvl]
+            k = int(min(q, len(pool_l), len(bench_l)))
+            if k == 0:
+                continue
+            drop_idx.extend(rng.choice(bench_l, k, replace=False))
+            take_idx.extend(rng.choice(pool_l, k, replace=False))
+        kept = benchmark.drop(index=drop_idx)
+        repl = contamination_pool.loc[take_idx]
+        return pd.concat([kept, repl], ignore_index=True)
 
     n_total = len(benchmark)
     n_replace = int(round(n_total * level_pct / 100.0))
