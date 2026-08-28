@@ -1,0 +1,26 @@
+Astacus astacus	random_forest
+Astacus astacus	xgboost
+Pontastacus leptodactylus (pooled)	random_forest
+Pontastacus leptodactylus (pooled)	xgboost
+Austropotamobius torrentium (pooled)	random_forest
+Austropotamobius torrentium (pooled)	xgboost
+Austropotamobius fulcisianus (pooled)	random_forest
+Austropotamobius fulcisianus (pooled)	xgboost
+Procambarus clarkii (native)	random_forest
+Procambarus clarkii (native)	xgboost
+Procambarus clarkii (alien)	random_forest
+Procambarus clarkii (alien)	xgboost
+Pacifastacus leniusculus (alien)	random_forest
+Pacifastacus leniusculus (alien)	xgboost
+Faxonius limosus (alien)	random_forest
+Faxonius limosus (alien)	xgboost
+Lacunicambarus diogenes	random_forest
+Lacunicambarus diogenes	xgboost
+Cambarus latimanus	random_forest
+Cambarus latimanus	xgboost
+Cambarus striatus	random_forest
+Cambarus striatus	xgboost
+Creaserinus fodiens	random_forest
+Creaserinus fodiens	xgboost
+Faxonius limosus (native)	random_forest
+Faxonius limosus (native)	xgboost
