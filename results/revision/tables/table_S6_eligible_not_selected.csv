@@ -1,0 +1,4 @@
+species,category_used,classification,n_clean_dedup_200m,n_snap_pool,n_lowacc_pool,n_basins,strahler_min,strahler_max,geographic_extent_km2
+Cherax quadricarinatus,regional,SNAPPING-ONLY,408,73,66,128,1.0,11.0,166119183.50195596
+Faxonius immunis,widespread,SNAPPING-ONLY,1232,77,52,13,1.0,12.0,8077728.01082725
+Procambarus acutus,widespread,SNAPPING-ONLY,2357,173,3,123,1.0,10.0,14032630.912113309
