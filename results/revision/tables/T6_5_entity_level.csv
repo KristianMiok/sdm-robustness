@@ -1,0 +1,8 @@
+axis,level,range_area_pct_change_03,range_area_pct_change_05,range_area_pct_change_07,range_area_pct_change_maxsss
+lowacc,3,4.1,3.59,2.34,4.28
+lowacc,10,11.52,15.45,10.11,13.4
+lowacc,20,24.75,31.86,22.21,35.78
+snapping,1,0.06,0.43,0.16,1.88
+snapping,2,0.14,0.13,0.52,1.74
+snapping,5,0.18,0.13,1.08,7.95
+snapping,10,-0.81,-1.09,2.02,25.47
