@@ -1,0 +1,16 @@
+axis,lowacc,lowacc,lowacc,snapping,snapping,snapping,snapping
+level,3,10,20,1,2,5,10
+entity,,,,,,,
+Astacus astacus,4.26,15.22,37.22,-0.26,-0.26,-0.64,
+Austropotamobius fulcisianus (pooled),2.87,6.43,10.38,0.15,0.13,0.11,-1.35
+Austropotamobius torrentium (pooled),9.6,31.65,63.63,0.51,0.79,1.92,
+Cambarus latimanus,,,,9.51,23.92,54.82,
+Cambarus striatus,,,,0.45,-0.16,-0.71,
+Creaserinus fodiens,,,,0.43,0.08,-1.37,-2.51
+Faxonius limosus (alien),3.94,15.67,26.51,0.14,0.42,0.84,
+Faxonius limosus (native),,,,4.93,9.77,17.41,
+Lacunicambarus diogenes,,,,0.94,1.11,1.32,
+Pacifastacus leniusculus (alien),5.18,20.28,37.3,-0.0,-0.14,-0.47,
+Pontastacus leptodactylus (pooled),1.75,20.35,49.41,0.94,0.63,-1.22,-1.09
+Procambarus clarkii (alien),3.25,9.04,15.73,0.16,0.04,0.24,-0.35
+Procambarus clarkii (native),0.23,1.58,2.68,0.19,0.06,0.13,-0.71

@@ -1,0 +1,8 @@
+axis,level,range_area_pct_change_03,range_area_pct_change_07,range_area_pct_change_maxsss,range_area_pct_change_p10,range_area_pct_change_maxsss_fix,range_area_pct_change_05,tier
+lowacc,3,4.3131,2.4902,6.8551,59.5424,114.3449,3.8769,full_panel
+lowacc,10,13.9633,10.0918,13.6224,69.2249,163.913,14.9942,full_panel
+lowacc,20,26.6557,21.3129,36.9464,87.4791,185.3986,30.3143,full_panel
+snapping,1,0.0627,0.0344,4.743,42.8902,118.0036,1.3914,full_panel
+snapping,2,0.0348,0.4448,6.3917,47.1841,142.5233,2.7993,full_panel
+snapping,5,0.0478,0.6573,10.2656,53.3263,166.1801,5.5677,full_panel
+snapping,10,-0.5999,1.0024,24.7552,3.9002,298.3601,-1.2042,reduced_panel

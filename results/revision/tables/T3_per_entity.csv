@@ -1,0 +1,40 @@
+entity,frac,auc,tss,range_area_pct_change_05,range_area_pct_change_maxsss,suitability_mad,schoener_d,eff_dose
+Astacus astacus,10,0.8435,0.4635,-5.0334,-7.3412,0.0212,0.9287,2.4058
+Astacus astacus,20,0.8428,0.4646,-10.1566,-12.7092,0.0246,0.9164,4.844
+Astacus astacus,50,0.8385,0.4627,-29.487,-28.3032,0.0409,0.8655,12.2462
+Austropotamobius fulcisianus (pooled),10,0.852,0.4832,-3.4734,-3.7963,0.0174,0.9344,1.0901
+Austropotamobius fulcisianus (pooled),20,0.8506,0.4963,-7.6777,-8.4425,0.0206,0.9197,2.2085
+Austropotamobius fulcisianus (pooled),50,0.8475,0.5163,-23.4116,-26.7782,0.0343,0.864,5.3799
+Austropotamobius torrentium (pooled),10,0.846,0.484,-4.5497,-4.2074,0.0207,0.9169,2.0337
+Austropotamobius torrentium (pooled),20,0.8465,0.4807,-8.3845,-8.4276,0.0237,0.9034,4.088
+Austropotamobius torrentium (pooled),50,0.8442,0.4682,-24.813,-25.2964,0.0354,0.8576,10.0724
+Cambarus latimanus,10,0.8203,0.3598,-2.7042,-4.3366,0.0169,0.9435,2.763
+Cambarus latimanus,20,0.8203,0.3834,-6.1909,-8.8609,0.0201,0.9298,5.4455
+Cambarus latimanus,50,0.8187,0.4661,-19.9875,-29.3151,0.034,0.877,13.8228
+Cambarus striatus,10,0.8204,0.4773,-2.1968,-4.8434,0.0192,0.9482,1.8027
+Cambarus striatus,20,0.8202,0.4921,-4.962,-9.2528,0.0239,0.9326,3.506
+Cambarus striatus,50,0.814,0.5026,-16.9053,-36.416,0.04,0.8859,9.0196
+Creaserinus fodiens,10,0.7509,0.3665,-5.0465,-8.1696,0.0359,0.9354,2.5011
+Creaserinus fodiens,20,0.7507,0.3539,-10.7502,-17.2543,0.0433,0.9216,4.9419
+Creaserinus fodiens,50,0.7464,0.3088,-31.7416,-52.6635,0.0788,0.8597,12.2508
+Faxonius limosus (alien),10,0.795,0.4464,-5.2806,-7.4082,0.031,0.9349,2.3724
+Faxonius limosus (alien),20,0.7952,0.443,-11.1308,-15.0875,0.0357,0.9262,4.7703
+Faxonius limosus (alien),50,0.7998,0.4269,-30.1491,-37.0247,0.0574,0.8924,12.1476
+Faxonius limosus (native),10,0.7896,0.3615,-2.4905,-3.0541,0.0145,0.939,2.0926
+Faxonius limosus (native),20,0.7866,0.3771,-4.9695,-7.0719,0.0178,0.9217,4.2995
+Faxonius limosus (native),50,0.7841,0.4019,-15.8194,-24.6082,0.028,0.8724,11.304
+Lacunicambarus diogenes,10,0.7116,0.1286,-6.5175,-8.088,0.035,0.9358,1.6881
+Lacunicambarus diogenes,20,0.7076,0.1094,-13.5205,-14.8609,0.0411,0.9245,3.3315
+Lacunicambarus diogenes,50,0.6968,0.0719,-36.7094,-42.0847,0.0722,0.873,8.3716
+Pacifastacus leniusculus (alien),10,0.8897,0.6286,-4.056,-5.6899,0.0189,0.9376,2.3933
+Pacifastacus leniusculus (alien),20,0.8884,0.6276,-9.5933,-11.5354,0.0215,0.9288,4.738
+Pacifastacus leniusculus (alien),50,0.8891,0.6175,-26.7768,-30.4184,0.0346,0.8928,11.8421
+Pontastacus leptodactylus (pooled),10,0.7853,0.4347,-5.6794,-5.8378,0.0348,0.919,2.8827
+Pontastacus leptodactylus (pooled),20,0.7858,0.4311,-11.6739,-11.3957,0.0437,0.8993,5.7614
+Pontastacus leptodactylus (pooled),50,0.7901,0.4328,-31.4656,-36.6342,0.0725,0.8396,14.5624
+Procambarus clarkii (alien),10,0.9157,0.6844,-3.6095,-4.5494,0.0199,0.9348,2.4661
+Procambarus clarkii (alien),20,0.916,0.685,-7.5799,-9.3064,0.0225,0.9261,4.8941
+Procambarus clarkii (alien),50,0.916,0.6815,-21.3212,-25.2411,0.0339,0.8938,12.2097
+Procambarus clarkii (native),10,0.8785,0.5505,-3.3462,-4.3438,0.0119,0.9325,2.0854
+Procambarus clarkii (native),20,0.8772,0.55,-6.286,-7.2541,0.0136,0.9203,4.1915
+Procambarus clarkii (native),50,0.8742,0.5554,-19.7498,-21.1743,0.0219,0.8648,10.412

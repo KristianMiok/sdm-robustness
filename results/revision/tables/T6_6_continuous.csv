@@ -1,0 +1,8 @@
+axis,level,suitability_mad,suitability_mean_shift,schoener_d,warren_i,tier
+lowacc,3,0.0209,0.0074,0.9354,0.9906,full_panel
+lowacc,10,0.0368,0.0209,0.8907,0.9765,full_panel
+lowacc,20,0.0556,0.0349,0.8478,0.9601,full_panel
+snapping,1,0.0141,0.0002,0.9602,0.9965,full_panel
+snapping,2,0.0151,0.0003,0.9573,0.9959,full_panel
+snapping,5,0.0178,0.0008,0.9496,0.9942,full_panel
+snapping,10,0.0205,-0.0012,0.9433,0.9926,reduced_panel

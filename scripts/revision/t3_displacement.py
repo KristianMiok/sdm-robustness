@@ -27,6 +27,7 @@ ap.add_argument("--alg", default="random_forest")
 ap.add_argument("--reps", type=int, default=10)
 ap.add_argument("--dists", type=int, nargs="+", default=[100, 250, 500])
 ap.add_argument("--fracs", type=int, nargs="+", default=[10, 20, 50])
+ap.add_argument("--out-suffix", default="")
 a = ap.parse_args()
 
 M = pd.read_csv("data/combined_data_true_master.csv", low_memory=False)
@@ -96,7 +97,7 @@ for rep in range(a.reps):
 T = pd.DataFrame(rows)
 slug = "".join(c for c in a.entity.replace(" ", "_") if c.isalnum() or c == "_")
 Path("results/revision").mkdir(parents=True, exist_ok=True)
-T.to_csv(f"results/revision/t3_{slug}_{a.alg}.csv", index=False)
+T.to_csv(f"results/revision/t3{a.out_suffix}_{slug}_{a.alg}.csv", index=False)
 print(f"\n=== {a.entity} [{a.alg}] ===")
 g = T[T.dist_m > 0].groupby(["dist_m","frac"]).agg(
     eff=("eff_dose","mean"),

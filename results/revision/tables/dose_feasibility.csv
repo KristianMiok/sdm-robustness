@@ -1,0 +1,10 @@
+axis,level,planned,ok,pct
+benchmark,0,2730,2730,100.0
+lowacc,3,1680,1670,99.4
+lowacc,10,1680,1670,99.4
+lowacc,20,1680,1670,99.4
+snapping,1,2730,2730,100.0
+snapping,2,2730,2730,100.0
+snapping,5,2730,2730,100.0
+snapping,10,2730,1050,38.5
+snapping,20,2730,0,0.0
