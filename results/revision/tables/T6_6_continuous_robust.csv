@@ -1,0 +1,8 @@
+axis,level,schoener_d|iqr,schoener_d|mean,schoener_d|med,suitability_mad|iqr,suitability_mad|mean,suitability_mad|med,suitability_mean_shift|iqr,suitability_mean_shift|mean,suitability_mean_shift|med,warren_i|iqr,warren_i|mean,warren_i|med
+lowacc,3,0.058,0.935,0.944,0.017,0.021,0.021,0.011,0.007,0.007,0.011,0.991,0.994
+lowacc,10,0.098,0.891,0.904,0.039,0.037,0.035,0.029,0.021,0.019,0.023,0.976,0.986
+lowacc,20,0.128,0.848,0.871,0.058,0.056,0.056,0.048,0.035,0.035,0.042,0.96,0.977
+snapping,1,0.038,0.96,0.962,0.012,0.014,0.013,0.001,0.0,0.0,0.005,0.996,0.997
+snapping,2,0.048,0.957,0.959,0.011,0.015,0.014,0.002,0.0,0.0,0.006,0.996,0.997
+snapping,5,0.054,0.95,0.955,0.011,0.018,0.016,0.003,0.001,0.001,0.007,0.994,0.997
+snapping,10,0.07,0.943,0.95,0.012,0.02,0.017,0.004,-0.001,-0.001,0.011,0.993,0.996

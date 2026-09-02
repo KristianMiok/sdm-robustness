@@ -1,0 +1,7 @@
+level,mode,d_str1|iqr,d_str1|mean,d_str1|med,range_area_pct_change_05|iqr,range_area_pct_change_05|mean,range_area_pct_change_05|med,range_area_pct_change_maxsss|iqr,range_area_pct_change_maxsss|mean,range_area_pct_change_maxsss|med
+3,plain,0.859,0.631,0.704,4.316,3.036,2.736,4.092,1.197,1.134
+3,stratified,0.0,0.0,0.0,2.954,2.726,2.584,3.035,1.407,1.646
+10,plain,2.916,2.229,2.178,14.789,11.004,9.357,9.798,6.107,6.522
+10,stratified,0.0,0.0,0.0,7.502,8.315,7.632,7.938,5.477,4.666
+20,plain,5.77,4.393,5.125,27.638,19.452,17.01,17.869,11.21,12.549
+20,stratified,0.0,0.0,0.0,15.092,12.57,10.192,14.245,8.155,5.807

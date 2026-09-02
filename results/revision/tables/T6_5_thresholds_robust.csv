@@ -1,0 +1,8 @@
+axis,level,range_area_pct_change_03|iqr,range_area_pct_change_03|mean,range_area_pct_change_03|med,range_area_pct_change_05|iqr,range_area_pct_change_05|mean,range_area_pct_change_05|med,range_area_pct_change_07|iqr,range_area_pct_change_07|mean,range_area_pct_change_07|med,range_area_pct_change_maxsss_fix|iqr,range_area_pct_change_maxsss_fix|mean,range_area_pct_change_maxsss_fix|med,range_area_pct_change_maxsss|iqr,range_area_pct_change_maxsss|mean,range_area_pct_change_maxsss|med,range_area_pct_change_p10|iqr,range_area_pct_change_p10|mean,range_area_pct_change_p10|med
+lowacc,3,7.324,4.313,2.696,4.738,3.877,3.328,4.3,2.49,2.386,193.32,114.345,5.186,4.582,6.855,2.604,7.021,59.542,2.044
+lowacc,10,22.023,13.963,8.488,16.097,14.994,11.87,11.993,10.092,8.939,221.653,163.913,18.606,12.999,13.622,10.742,17.153,69.225,10.595
+lowacc,20,34.564,26.656,14.152,31.477,30.314,23.042,27.82,21.313,20.475,250.095,185.399,40.856,27.816,36.946,22.785,34.802,87.479,26.021
+snapping,1,0.802,0.063,0.0,1.357,1.391,0.0,1.803,0.034,0.031,9.02,118.004,1.188,2.183,4.743,0.0,3.766,42.89,0.672
+snapping,2,0.898,0.035,0.0,1.485,2.799,0.0,2.046,0.445,0.23,34.639,142.523,1.551,2.36,6.392,0.075,4.586,47.184,1.156
+snapping,5,1.241,0.048,0.0,2.147,5.568,0.098,2.942,0.657,0.639,119.221,166.18,2.791,3.498,10.266,0.538,7.829,53.326,2.754
+snapping,10,1.836,-0.6,0.0,4.03,-1.204,0.0,3.984,1.002,1.111,94.064,298.36,4.641,5.499,24.755,2.058,9.089,3.9,2.051
