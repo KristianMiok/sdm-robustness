@@ -67,9 +67,12 @@ PAN.reset_index().to_csv(OUT/"panel_composition.csv", index=False)
 print("\n=== sastav panela ===\n", PAN[["planned_entities","n_entities","tier"]])
 
 # --- 6. delte S4/S5 sa hijerarhijskim bootstrapom --------------------------
-MET = [c for c in ("auc","tss","brier","sensitivity","specificity","omission_rate",
-                   "importance_spearman","env_centroid_disp","env_dispersion_change")
+MET = [c for c in ("auc","tss","brier","sensitivity","specificity","omission_rate")
        if c in OK.columns]
+# Tier 2: vec su poredjenja sa benchmarkom - izvestavaju se kao nivoi, ne kao delte
+T2 = [c for c in ("importance_spearman","importance_jaccard_top5","importance_jaccard_top10",
+                  "env_centroid_disp","env_dispersion_change","domain_rank_stability")
+      if c in OK.columns]
 def hboot(g, col):
     by = {e: v.dropna().to_numpy() for e, v in g.groupby("entity")[col]}
     by = {e: v for e, v in by.items() if len(v)}
@@ -92,6 +95,12 @@ for (ax,lv,alg,tr), g in M.groupby(["axis","level","algorithm","track"]):
                          n=int(g[m+"_d"].notna().sum()), entities=g.entity.nunique()))
 S45 = pd.DataFrame(rows).merge(PAN.reset_index()[["axis","level","tier"]], on=["axis","level"])
 S45.to_csv(OUT/"S4_S5_delta.csv", index=False)
+if T2:
+    E2 = C.groupby(["axis","level","entity"])[T2].mean()
+    R2 = E2.groupby(["axis","level"]).median().round(4).join(PAN["tier"])
+    R2.to_csv(OUT/"T8_tier2.csv")
+    C.groupby(["axis","level","algorithm"])[T2].mean().round(4).to_csv(OUT/"T8_tier2_by_alg.csv")
+    print("\n=== Tier 2 (entitetske medijane, nivoi ne delte) ===\n", R2)
 print("\n=== S4/S5, AUC, combined ===")
 print(S45[(S45.metric=="auc") & (S45.track=="combined")]
       .pivot_table(index=["axis","level","tier"], columns="algorithm", values="delta").round(4))
