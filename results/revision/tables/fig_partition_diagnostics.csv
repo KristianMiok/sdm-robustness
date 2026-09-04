@@ -1,0 +1,14 @@
+entity,n,basins,largest_basin_pct,top3_basin_pct,fold_min_max,fold_min_n,fold_max_n,gini,reference_possible,reference_n,entity_type
+Lacunicambarus diogenes,1117,66,72.2,79.1,0.096,77,806,0.522,False,0,SNAP
+Austropotamobius torrentium (pooled),1032,39,59.4,76.2,0.17,104,613,0.395,True,152,DUAL
+Creaserinus fodiens,622,36,47.4,69.9,0.247,73,295,0.306,True,128,SNAP
+Cambarus striatus,747,16,41.6,87.4,0.135,42,311,0.43,False,0,SNAP
+Austropotamobius fulcisianus (pooled),744,79,36.3,59.3,0.426,115,270,0.174,True,157,DUAL
+Faxonius limosus (native),363,47,35.5,63.1,0.45,58,129,0.158,True,83,SNAP
+Astacus astacus,2058,172,31.1,54.3,0.552,354,641,0.112,True,412,DUAL
+Pacifastacus leniusculus (alien),4171,200,21.0,45.4,0.938,823,877,0.01,True,845,DUAL
+Faxonius limosus (alien),3811,108,19.0,45.7,0.999,762,763,0.0,True,687,DUAL
+Cambarus latimanus,1008,21,17.6,51.2,0.985,200,203,0.003,True,198,SNAP
+Pontastacus leptodactylus (pooled),1496,195,17.3,36.9,0.997,299,300,0.001,True,389,DUAL
+Procambarus clarkii (native),1915,79,16.4,43.3,1.0,383,383,0.0,True,383,DUAL
+Procambarus clarkii (alien),7711,835,6.9,15.4,0.999,1542,1543,0.0,True,1561,DUAL
