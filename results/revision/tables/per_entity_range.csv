@@ -1,16 +1,69 @@
-axis,lowacc,lowacc,lowacc,snapping,snapping,snapping,snapping
-level,3,10,20,1,2,5,10
-entity,,,,,,,
-Astacus astacus,4.26,15.22,37.22,-0.26,-0.26,-0.64,
-Austropotamobius fulcisianus (pooled),2.87,6.43,10.38,0.15,0.13,0.11,-1.35
-Austropotamobius torrentium (pooled),9.6,31.65,63.63,0.51,0.79,1.92,
-Cambarus latimanus,,,,9.51,23.92,54.82,
-Cambarus striatus,,,,0.45,-0.16,-0.71,
-Creaserinus fodiens,,,,0.43,0.08,-1.37,-2.51
-Faxonius limosus (alien),3.94,15.67,26.51,0.14,0.42,0.84,
-Faxonius limosus (native),,,,4.93,9.77,17.41,
-Lacunicambarus diogenes,,,,0.94,1.11,1.32,
-Pacifastacus leniusculus (alien),5.18,20.28,37.3,-0.0,-0.14,-0.47,
-Pontastacus leptodactylus (pooled),1.75,20.35,49.41,0.94,0.63,-1.22,-1.09
-Procambarus clarkii (alien),3.25,9.04,15.73,0.16,0.04,0.24,-0.35
-Procambarus clarkii (native),0.23,1.58,2.68,0.19,0.06,0.13,-0.71
+entity,axis,level,median,q25,q75,n,IQR
+Astacus astacus,lowacc,3,4.89,3.49,6.45,70,2.96
+Astacus astacus,lowacc,10,17.1,14.86,20.95,70,6.09
+Astacus astacus,lowacc,20,45.62,40.09,51.36,70,11.27
+Astacus astacus,snapping,1,-0.46,-1.08,0.4,70,1.48
+Astacus astacus,snapping,2,-0.31,-1.04,0.33,70,1.37
+Astacus astacus,snapping,5,-0.98,-2.22,0.36,70,2.58
+Austropotamobius fulcisianus (pooled),lowacc,3,2.95,2.01,4.82,70,2.81
+Austropotamobius fulcisianus (pooled),lowacc,10,10.13,7.54,13.64,70,6.1
+Austropotamobius fulcisianus (pooled),lowacc,20,16.91,12.72,21.03,70,8.31
+Austropotamobius fulcisianus (pooled),snapping,1,-0.28,-1.49,1.15,70,2.64
+Austropotamobius fulcisianus (pooled),snapping,2,-0.23,-1.46,1.01,70,2.47
+Austropotamobius fulcisianus (pooled),snapping,5,-0.53,-1.42,1.18,70,2.6
+Austropotamobius fulcisianus (pooled),snapping,10,0.08,-0.96,1.5,70,2.46
+Austropotamobius torrentium (pooled),lowacc,3,11.33,9.02,13.06,70,4.04
+Austropotamobius torrentium (pooled),lowacc,10,37.92,33.77,41.25,70,7.48
+Austropotamobius torrentium (pooled),lowacc,20,77.46,67.65,85.65,70,18.0
+Austropotamobius torrentium (pooled),snapping,1,0.33,-1.05,1.49,70,2.54
+Austropotamobius torrentium (pooled),snapping,2,0.52,-0.86,2.28,70,3.14
+Austropotamobius torrentium (pooled),snapping,5,2.38,0.85,4.36,70,3.51
+Cambarus latimanus,snapping,1,-0.02,-0.74,0.54,70,1.28
+Cambarus latimanus,snapping,2,0.21,-0.39,0.83,70,1.22
+Cambarus latimanus,snapping,5,0.22,-0.57,1.07,70,1.64
+Cambarus striatus,snapping,1,0.38,-0.31,0.88,70,1.19
+Cambarus striatus,snapping,2,0.55,-0.46,1.08,70,1.54
+Cambarus striatus,snapping,5,0.83,-0.02,2.04,70,2.06
+Creaserinus fodiens,snapping,1,-0.25,-0.91,0.74,70,1.65
+Creaserinus fodiens,snapping,2,-0.2,-0.85,0.54,70,1.39
+Creaserinus fodiens,snapping,5,-0.19,-1.27,0.53,70,1.8
+Creaserinus fodiens,snapping,10,-0.66,-1.88,0.53,70,2.41
+Faxonius limosus (alien),lowacc,3,4.55,3.73,5.59,70,1.86
+Faxonius limosus (alien),lowacc,10,19.7,17.32,21.61,70,4.29
+Faxonius limosus (alien),lowacc,20,35.22,32.72,36.84,70,4.12
+Faxonius limosus (alien),snapping,1,0.23,-0.56,0.76,70,1.32
+Faxonius limosus (alien),snapping,2,0.48,-0.18,0.95,70,1.13
+Faxonius limosus (alien),snapping,5,1.12,0.54,1.88,70,1.34
+Faxonius limosus (native),snapping,1,0.23,-0.74,1.41,70,2.15
+Faxonius limosus (native),snapping,2,0.37,-0.93,1.67,70,2.6
+Faxonius limosus (native),snapping,5,1.39,0.05,2.71,70,2.66
+Lacunicambarus diogenes,snapping,1,0.6,-0.41,1.09,70,1.5
+Lacunicambarus diogenes,snapping,2,0.88,-0.28,1.67,70,1.95
+Lacunicambarus diogenes,snapping,5,1.97,0.62,2.85,70,2.23
+Pacifastacus leniusculus (alien),lowacc,3,6.67,5.48,7.76,70,2.28
+Pacifastacus leniusculus (alien),lowacc,10,26.04,24.25,27.74,70,3.49
+Pacifastacus leniusculus (alien),lowacc,20,48.45,45.45,50.96,70,5.51
+Pacifastacus leniusculus (alien),snapping,1,0.04,-0.47,0.76,70,1.23
+Pacifastacus leniusculus (alien),snapping,2,0.12,-0.54,0.55,70,1.09
+Pacifastacus leniusculus (alien),snapping,5,-0.1,-0.61,0.46,70,1.07
+Pontastacus leptodactylus (pooled),lowacc,3,1.77,1.09,2.63,70,1.54
+Pontastacus leptodactylus (pooled),lowacc,10,6.72,4.64,8.42,70,3.78
+Pontastacus leptodactylus (pooled),lowacc,20,14.38,12.0,15.89,70,3.89
+Pontastacus leptodactylus (pooled),snapping,1,-0.28,-0.99,0.65,70,1.64
+Pontastacus leptodactylus (pooled),snapping,2,-0.42,-1.41,0.3,70,1.71
+Pontastacus leptodactylus (pooled),snapping,5,-1.26,-2.11,-0.2,70,1.91
+Pontastacus leptodactylus (pooled),snapping,10,-1.75,-2.82,-0.62,70,2.2
+Procambarus clarkii (alien),lowacc,3,4.0,3.09,5.06,70,1.97
+Procambarus clarkii (alien),lowacc,10,13.3,12.34,14.44,70,2.1
+Procambarus clarkii (alien),lowacc,20,24.11,23.01,25.38,70,2.37
+Procambarus clarkii (alien),snapping,1,0.26,-0.17,0.64,70,0.81
+Procambarus clarkii (alien),snapping,2,0.68,0.1,1.2,70,1.1
+Procambarus clarkii (alien),snapping,5,1.76,0.86,2.29,70,1.43
+Procambarus clarkii (alien),snapping,10,3.02,2.18,3.75,70,1.57
+Procambarus clarkii (native),lowacc,3,0.39,-0.51,1.66,70,2.17
+Procambarus clarkii (native),lowacc,10,3.07,1.8,3.94,70,2.14
+Procambarus clarkii (native),lowacc,20,4.66,3.65,6.15,70,2.5
+Procambarus clarkii (native),snapping,1,0.53,-0.38,1.3,70,1.68
+Procambarus clarkii (native),snapping,2,1.06,-0.23,1.7,70,1.93
+Procambarus clarkii (native),snapping,5,1.66,0.62,2.96,70,2.34
+Procambarus clarkii (native),snapping,10,3.23,2.08,4.74,70,2.66
