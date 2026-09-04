@@ -1,8 +1,8 @@
 axis,level,suitability_mad,suitability_mean_shift,schoener_d,warren_i,tier
-lowacc,3,0.0209,0.0074,0.9354,0.9906,full_panel
-lowacc,10,0.0368,0.0209,0.8907,0.9765,full_panel
-lowacc,20,0.0556,0.0349,0.8478,0.9601,full_panel
-snapping,1,0.0141,0.0002,0.9602,0.9965,full_panel
-snapping,2,0.0151,0.0003,0.9573,0.9959,full_panel
-snapping,5,0.0178,0.0008,0.9496,0.9942,full_panel
-snapping,10,0.0205,-0.0012,0.9433,0.9926,reduced_panel
+lowacc,3,0.0282,0.0097,0.9174,0.9891,full_panel
+lowacc,10,0.0498,0.0259,0.8668,0.9731,full_panel
+lowacc,20,0.0714,0.0417,0.8155,0.954,full_panel
+snapping,1,0.0168,0.0001,0.9455,0.9951,full_panel
+snapping,2,0.0179,0.0003,0.941,0.9942,full_panel
+snapping,5,0.0193,0.0007,0.934,0.992,full_panel
+snapping,10,0.0227,0.0001,0.9217,0.989,reduced_panel

@@ -1,0 +1,4 @@
+algorithm,n,rho,p
+random_forest,8,0.857,0.0065
+xgboost,8,0.952,0.0003
+maxent,8,0.905,0.002

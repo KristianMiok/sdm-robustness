@@ -98,19 +98,19 @@ for col, title, fname, ylab in [
     panel(CB, col, title, fname, ylab, zero=True)
 
 panel(CB, "importance_spearman", "(Fig 3) Importance rank correlation",
-      "fig3_spearman", "Spearman ρ vs benchmark", algs=["random_forest","xgboost"])
+      "fig3_spearman", "Spearman ρ vs benchmark", stat="median", algs=["random_forest","xgboost"])
 for col, title, fname, ylab, st in [
-    ("niche_breadth_change","(a) Sampled niche breadth change","fig4_breadth","Dispersion change","mean"),
-    ("niche_centroid_disp", "(b) Sampled centroid displacement","fig4_centroid","Displacement","mean"),
-    ("schoener_d","(a) Schoener's D","fig5_schoener","Schoener's D","mean"),
-    ("warren_i",  "(b) Warren's I","fig5_warren","Warren's I","mean"),
+    ("niche_breadth_change","(a) Sampled niche breadth change","fig4_breadth","Dispersion change","median"),
+    ("niche_centroid_disp", "(b) Sampled centroid displacement","fig4_centroid","Displacement","median"),
+    ("schoener_d","(a) Schoener's D","fig5_schoener","Schoener's D","median"),
+    ("warren_i",  "(b) Warren's I","fig5_warren","Warren's I","median"),
     ("range_area_pct_change_05","(c) Range-area change","fig5_range","Range-area change (%)","median")]:
     panel(CB, col, title, fname, ylab, stat=st, zero=(st=="median"))
 for col, title, fname in [("CLI_shift","(S2) Climate-domain importance shift","figS2_cli"),
                           ("TOP_shift","(S3) Topography-domain importance shift","figS3_top"),
                           ("SOL_shift","(S4) Soil-domain importance shift","figS4_sol"),
                           ("LAC_shift","(S5) Land-cover-domain importance shift","figS5_lac")]:
-    panel(CB, col, title, fname, "Importance-share difference", zero=True,
+    panel(CB, col, title, fname, "Importance-share difference", stat="median", zero=True,
           algs=["random_forest","xgboost"])
 
 # ---- Fig 6: T3 controlled displacement ----

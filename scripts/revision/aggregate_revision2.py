@@ -67,7 +67,7 @@ PAN.reset_index().to_csv(OUT/"panel_composition.csv", index=False)
 print("\n=== sastav panela ===\n", PAN[["planned_entities","n_entities","tier"]])
 
 # --- 6. delte S4/S5 sa hijerarhijskim bootstrapom --------------------------
-MET = [c for c in ("auc","tss","brier","sensitivity","specificity","omission_rate")
+MET = [c for c in ("auc","tss","brier","boyce","sensitivity","specificity","omission_rate")
        if c in OK.columns]
 # Tier 2: vec su poredjenja sa benchmarkom - izvestavaju se kao nivoi, ne kao delte
 T2 = [c for c in ("importance_spearman","importance_jaccard_top5","importance_jaccard_top10",
@@ -95,11 +95,15 @@ for (ax,lv,alg,tr), g in M.groupby(["axis","level","algorithm","track"]):
                          n=int(g[m+"_d"].notna().sum()), entities=g.entity.nunique()))
 S45 = pd.DataFrame(rows).merge(PAN.reset_index()[["axis","level","tier"]], on=["axis","level"])
 S45.to_csv(OUT/"S4_S5_delta.csv", index=False)
+CB2 = C[C.track == "combined"]
 if T2:
-    E2 = C.groupby(["axis","level","entity"])[T2].mean()
-    R2 = E2.groupby(["axis","level"]).median().round(4).join(PAN["tier"])
+    # jedno pravilo: combined track, prosek u entitetu, medijana preko entiteta
+    R2 = (CB2.groupby(["axis","level","entity"])[T2].mean()
+             .groupby(["axis","level"]).median().round(4).join(PAN["tier"]))
     R2.to_csv(OUT/"T8_tier2.csv")
-    C.groupby(["axis","level","algorithm"])[T2].mean().round(4).to_csv(OUT/"T8_tier2_by_alg.csv")
+    (CB2.groupby(["axis","level","algorithm","entity"])[T2].mean()
+        .groupby(["axis","level","algorithm"]).median().round(4)
+        .to_csv(OUT/"T8_tier2_by_alg.csv"))
     print("\n=== Tier 2 (entitetske medijane, nivoi ne delte) ===\n", R2)
 print("\n=== S4/S5, AUC, combined ===")
 print(S45[(S45.metric=="auc") & (S45.track=="combined")]
@@ -109,8 +113,10 @@ print(S45[(S45.metric=="auc") & (S45.track=="combined")]
 THR  = [c for c in OK.columns if c.startswith("range_area_pct_change")]
 CONT = [c for c in ("suitability_mad","suitability_mean_shift","schoener_d","warren_i")
         if c in OK.columns]
-C.groupby(["axis","level"])[THR].mean().round(4).join(PAN["tier"]).to_csv(OUT/"T6_5_thresholds.csv")
-C.groupby(["axis","level"])[CONT].mean().round(4).join(PAN["tier"]).to_csv(OUT/"T6_6_continuous.csv")
+(CB2.groupby(["axis","level","entity"])[THR].mean().groupby(["axis","level"])
+    .median().round(4).join(PAN["tier"]).to_csv(OUT/"T6_5_thresholds.csv"))
+(CB2.groupby(["axis","level","entity"])[CONT].mean().groupby(["axis","level"])
+    .median().round(4).join(PAN["tier"]).to_csv(OUT/"T6_6_continuous.csv"))
 C.pivot_table(index="entity", columns=["axis","level"],
               values="range_area_pct_change_05", aggfunc="mean").round(2).to_csv(OUT/"per_entity_range.csv")
 print("\n=== T6.5 pragovi ===\n", C.groupby(["axis","level"])[THR].mean().round(2))

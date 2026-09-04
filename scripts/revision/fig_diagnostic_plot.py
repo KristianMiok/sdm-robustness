@@ -20,15 +20,19 @@ for r in T.itertuples():
                 .replace("Creaserinus","C.").replace("Cambarus","C.")
                 .replace("Faxonius","F.").replace("Astacus","A."),
                 (r.largest_basin_pct, r.fold_min_max), fontsize=6.5,
-                xytext=(4,3), textcoords="offset points", alpha=0.75)
+                xytext=(6,3) if r.largest_basin_pct < 40 else (-6,3),
+                ha="left" if r.largest_basin_pct < 40 else "right",
+                textcoords="offset points", alpha=0.8)
 rho = spearmanr(T.largest_basin_pct, T.fold_min_max)
 ax.set_xlabel("Records in the largest basin (%)")
 ax.set_ylabel("Fold balance (min / max)")
 ax.set_title("(Diagnostic) Basin concentration vs fold balance",
              fontweight="bold", fontsize=11)
-ax.text(0.97, 0.05, f"Spearman ρ = {rho.statistic:+.3f}  (p = {rho.pvalue:.3f}, n = {len(T)})",
-        transform=ax.transAxes, ha="right", fontsize=8, alpha=0.8)
-ax.legend(fontsize=8, loc="upper right"); ax.grid(True, alpha=0.25)
+pv = "p < 0.001" if rho.pvalue < 0.001 else f"p = {rho.pvalue:.3f}"
+ax.text(0.03, 0.03, f"Spearman ρ = {rho.statistic:+.3f}  ({pv}, n = {len(T)})",
+        transform=ax.transAxes, ha="left", fontsize=8,
+        bbox=dict(fc="white", ec="none", alpha=0.85, pad=2))
+ax.legend(fontsize=8, loc="lower left", bbox_to_anchor=(0.0, 0.12)); ax.grid(True, alpha=0.25)
 fig.tight_layout()
 for ext in ("pdf","svg"):
     fig.savefig(f"results/figures/figD1_partition_diagnostic.{ext}", bbox_inches="tight")
